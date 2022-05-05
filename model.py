@@ -109,7 +109,7 @@ class PixelWiseA3C_InnerState_ConvR:
         total_metric = torch.mean(torch.tensor(metrics))
         return total_reward, total_metric
 
-    def train(self, train_set, test_set, batch_size, episodes, save_every):
+    def train(self, train_set, valid_set, batch_size, episodes, save_every):
         cur_episode = 0
         if self.ckpt_man is not None:
             cur_episode = self.ckpt_man['episode']
@@ -125,7 +125,7 @@ class PixelWiseA3C_InnerState_ConvR:
             print(f"{cur_episode} / {max_episode} - loss: {loss:.6f} - sum reward: {total_reward * 255:.6f}")
 
             if cur_episode % save_every == 0:
-                reward, metric = self.evaluate(test_set, batch_size)
+                reward, metric = self.evaluate(valid_set, batch_size)
                 print(f"Test - reward: {reward * 255:.6f} - {self.metric.__name__}: {metric:.6f}")
 
                 print(f"Save model weights to {self.model_path}")
