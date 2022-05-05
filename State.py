@@ -47,9 +47,9 @@ class State:
         act = act.detach().cpu()
         inner_state = inner_state.detach().cpu()
         srcnn = self.sr_images.clone()
-        espcn = None 
-        fsrcnn = None
-        vdsr = None
+        espcn = self.sr_images.clone()
+        fsrcnn = self.sr_images.clone()
+        vdsr = self.sr_images.clone()
 
         neutral = (self.move_range - 1) / 2
         move = act.type(torch.float32)
