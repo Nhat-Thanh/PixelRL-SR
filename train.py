@@ -26,6 +26,9 @@ FLAG, unparsed = parser.parse_known_args()
 
 # training settings
 SCALE = FLAG.scale
+if SCALE not in [2, 3, 4]:
+    ValueError("--scale must be 2, 3 or 4")
+
 BATCH_SIZE = FLAG.batch_size
 CKPT_DIR = FLAG.ckpt_dir
 CKPT_PATH = os.path.join(CKPT_DIR, f"ckpt-x{SCALE}.pt")

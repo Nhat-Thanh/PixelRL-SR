@@ -11,9 +11,9 @@ torch.manual_seed(1)
 # =====================================================================================
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--scale",      type=int, default=2,                                help='-')
-parser.add_argument("--image-path", type=str, default="dataset/test2.png",              help='-')
-parser.add_argument("--model-path", type=str, default="checkpoint/x2/PixelRL_SR-x2.pt", help='-')
+parser.add_argument("--scale",      type=int, default=2,                   help='-')
+parser.add_argument("--image-path", type=str, default="dataset/test2.png", help='-')
+parser.add_argument("--model-path", type=str, default="",                  help='-')
 FLAG, unparsed = parser.parse_known_args()
 
 
@@ -22,8 +22,15 @@ FLAG, unparsed = parser.parse_known_args()
 # =====================================================================================
 
 SCALE = FLAG.scale
-MODEL_PATH = FLAG.model_path
+
+if SCALE not in [2, 3, 4]:
+    ValueError("--scale must be 2, 3 or 4")
+
 IMAGE_PATH = FLAG.image_path
+MODEL_PATH = FLAG.model_path
+
+if MODEL_PATH == "":
+    MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 N_ACTIONS = 7

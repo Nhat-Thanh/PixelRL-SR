@@ -20,6 +20,9 @@ FLAG, unparsed = parser.parse_known_args()
 # =====================================================================================
 
 SCALE = FLAG.scale
+if SCALE not in [2, 3, 4]:
+    ValueError("--scale must be 2, 3 or 4")
+
 MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
