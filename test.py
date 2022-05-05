@@ -78,14 +78,13 @@ def main():
 
                 CURRENT_STATE.step(actions, inner_state)
                 # Calculate reward on Y chanel only
-                reward = (torch.square(hr[:,0:1] - prev_img[:,0:1]) - \
-                          torch.square(hr[:,0:1] - CURRENT_STATE.sr_images[:,0:1])) * 255
+                reward = torch.square(hr[:,0:1] - prev_img[:,0:1]) - \
+                         torch.square(hr[:,0:1] - CURRENT_STATE.sr_images[:,0:1])
 
-                sum_reward += torch.mean(reward) * (GAMMA ** t)
+                sum_reward += torch.mean(reward * 255) * (GAMMA ** t)
 
             sr = torch.clip(CURRENT_STATE.sr_images, 0.0, 1.0)
             psnr = PSNR(hr, sr)
-            sum_reward *= 255 
             metric_array.append(psnr)
             reward_array.append(sum_reward)
 
