@@ -44,8 +44,8 @@ def main():
         MODEL.load_state_dict(torch.load(MODEL_PATH, torch.device(DEVICE)))
     MODEL.train(False)
 
-    rewards = []
-    metrics = []
+    reward_array = []
+    metric_array = []
     for i in range(0, len(LS_HR_PATHS)):
         hr_image_path = LS_HR_PATHS[i]
         lr_image_path = LS_LR_PATHS[i]
@@ -86,11 +86,11 @@ def main():
             sr = torch.clip(CURRENT_STATE.sr_images, 0.0, 1.0)
             psnr = PSNR(hr, sr)
             sum_reward *= 255 
-            metrics.append(psnr)
-            rewards.append(sum_reward)
+            metric_array.append(psnr)
+            reward_array.append(sum_reward)
 
-    print(f"Average reward: {torch.mean(torch.tensor(metrics)):.4f}",
-          f"- PSNR: {torch.mean(torch.tensor(metrics)):.4f}")
+    print(f"Average reward: {torch.mean(torch.tensor(reward_array) * 255):.4f}",
+          f"- PSNR: {torch.mean(torch.tensor(metric_array)):.4f}")
 
 if __name__ == '__main__':
     main()
