@@ -122,11 +122,11 @@ class PixelWiseA3C_InnerState_ConvR:
             bicubic, lr, hr, _ = train_set.get_batch(batch_size)
             total_reward, loss = self.train_step(bicubic, lr, hr)
 
-            print(f"{cur_episode} / {max_episode} - loss: {loss:.6f} - sum reward: {total_reward * 255:.6f}")
+            print(f"Epoch {cur_episode} / {max_episode} - loss: {loss:.6f} - sum reward: {total_reward * 255:.6f}")
 
             if cur_episode % save_every == 0:
                 reward, metric = self.evaluate(valid_set, batch_size)
-                print(f"Test - reward: {reward * 255:.6f} - {self.metric.__name__}: {metric:.6f}")
+                print(f"\nEvaluate - reward: {reward * 255:.6f} - {self.metric.__name__}: {metric:.6f}")
 
                 print(f"Save model weights to {self.model_path}")
                 torch.save(self.model.state_dict(), self.model_path)
