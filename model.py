@@ -131,7 +131,7 @@ class PixelWiseA3C_InnerState_ConvR:
                 print(f"Save model weights to {self.model_path}")
                 torch.save(self.model.state_dict(), self.model_path)
 
-                print(f"Save checkpoint to {ckpt_path}")
+                print(f"Save checkpoint to {ckpt_path}\n")
                 torch.save({ 'episode': cur_episode,
                              'model': self.model.state_dict(),
                              'shared_model': self.shared_model.state_dict(),
