@@ -132,7 +132,7 @@ class PixelWiseA3C_InnerState_ConvR:
         if exists(logging_path["reward"]):
             reward_array = np.load(logging_path["reward"]).tolist()
         if exists(logging_path["metric"]):
-            val_metric_array = np.load(logging_path["reward"]).tolist()
+            val_metric_array = np.load(logging_path["metric"]).tolist()
 
         self.current_state = State(self.scale, self.device)
         while cur_episode < max_episode:
@@ -160,10 +160,10 @@ class PixelWiseA3C_InnerState_ConvR:
                              'optimizer': self.optimizer.state_dict() }, ckpt_path)
 
             # self.optimizer.param_groups[0]['lr'] = self.initial_lr - ((1 - cur_episode / max_episode) ** 0.9)
-            if save_log:
-                np.save(logging_path["loss"], np.array(loss_array, dtype=np.float32))
-                np.save(logging_path["reward"], np.array(reward_array, dtype=np.float32))
-                np.save(logging_path["metric"], np.array(val_metric_array, dtype=np.float32))
+        if save_log:
+            np.save(logging_path["loss"], np.array(loss_array, dtype=np.float32))
+            np.save(logging_path["reward"], np.array(reward_array, dtype=np.float32))
+            np.save(logging_path["metric"], np.array(val_metric_array, dtype=np.float32))
 
     def train_step(self, bicubic, lr, hr):
         self.model.train(True)
