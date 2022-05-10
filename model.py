@@ -1,6 +1,7 @@
 import copy
-from State import State
+import numpy as np
 import os
+from State import State
 import torch
 from torch.distributions import Categorical
 from utils.common import exists
@@ -109,12 +110,29 @@ class PixelWiseA3C_InnerState_ConvR:
         total_metric = torch.mean(torch.tensor(metrics))
         return total_reward, total_metric
 
-    def train(self, train_set, valid_set, batch_size, episodes, save_every):
+    def train(self, train_set, valid_set, batch_size, episodes, save_every, save_log=False):
         cur_episode = 0
         if self.ckpt_man is not None:
             cur_episode = self.ckpt_man['episode']
         max_episode = cur_episode + episodes
         ckpt_path = os.path.join(self.ckpt_dir, f"ckpt-x{self.scale}.pt")
+
+        logging_path = {
+                "loss": os.path.join(self.ckpt_dir, "loss_array.npy"),
+                "reward": os.path.join(self.ckpt_dir, "reward_array.npy"),
+                "metric": os.path.join(self.ckpt_dir, "metric_array.npy")
+                }
+
+        loss_array = []
+        reward_array = []
+        val_metric_array = []
+
+        if exists(logging_path["loss"]):
+            loss_array = np.load(logging_path["loss"]).tolist()
+        if exists(logging_path["reward"]):
+            reward_array = np.load(logging_path["reward"]).tolist()
+        if exists(logging_path["metric"]):
+            val_metric_array = np.load(logging_path["reward"]).tolist()
 
         self.current_state = State(self.scale, self.device)
         while cur_episode < max_episode:
@@ -124,9 +142,13 @@ class PixelWiseA3C_InnerState_ConvR:
 
             print(f"Episode {cur_episode}  / {max_episode} - loss: {loss:.6f} - sum reward: {total_reward * 255:.6f}")
 
+            loss_array.append(loss.numpy())
+            reward_array.append(total_reward.numpy())
+
             if cur_episode % save_every == 0:
                 reward, metric = self.evaluate(valid_set, batch_size)
                 print(f"\nEvaluate - reward: {reward * 255:.6f} - {self.metric.__name__}: {metric:.6f}")
+                val_metric_array.append(metric.numpy())
 
                 print(f"Save model weights to {self.model_path}")
                 torch.save(self.model.state_dict(), self.model_path)
@@ -138,6 +160,10 @@ class PixelWiseA3C_InnerState_ConvR:
                              'optimizer': self.optimizer.state_dict() }, ckpt_path)
 
             # self.optimizer.param_groups[0]['lr'] = self.initial_lr - ((1 - cur_episode / max_episode) ** 0.9)
+            if save_log:
+                np.save(logging_path["loss"], np.array(loss_array, dtype=np.float32))
+                np.save(logging_path["reward"], np.array(reward_array, dtype=np.float32))
+                np.save(logging_path["metric"], np.array(val_metric_array, dtype=np.float32))
 
     def train_step(self, bicubic, lr, hr):
         self.model.train(True)

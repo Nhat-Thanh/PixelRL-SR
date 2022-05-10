@@ -37,6 +37,7 @@ EPISODES = FLAG.episodes
 MODEL_PATH = os.path.join(CKPT_DIR, f"PixelRL_SR-x{SCALE}.pt")
 # PRETRAINED_PATH = f"initial_weight/denoise_{SIGMA}_gray_ConvGRU_RMC.pt"
 SAVE_EVERY = FLAG.save_every
+SAVE_LOG = True
 
 # model settings
 N_ACTIONS = 7
@@ -76,7 +77,7 @@ def main():
     #     print(f"Load pre-trained model at {PRETRAINED_PATH}")
     #     pixelRL.load_weights(PRETRAINED_PATH)
 
-    pixelRL.train(train_set, valid_set, BATCH_SIZE, EPISODES, SAVE_EVERY)
+    pixelRL.train(train_set, valid_set, BATCH_SIZE, EPISODES, SAVE_EVERY, SAVE_LOG)
 
 if __name__ == '__main__':
     main()
