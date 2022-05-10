@@ -11,7 +11,8 @@ torch.manual_seed(1)
 # =====================================================================================
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--scale", type=int, default=2, help='-')
+parser.add_argument("--scale",     type=int, default=2,  help='-')
+parser.add_argument("--ckpt-path", type=str, default="", help='-')
 FLAG, unparsed = parser.parse_known_args()
 
 
@@ -23,7 +24,9 @@ SCALE = FLAG.scale
 if SCALE not in [2, 3, 4]:
     ValueError("--scale must be 2, 3 or 4")
 
-MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
+MODEL_PATH = FLAG.ckpt_path
+if MODEL_PATH == "":
+    MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 N_ACTIONS = 7
