@@ -18,6 +18,7 @@ parser.add_argument("--episodes",   type=int, default=5000,            help='-')
 parser.add_argument("--batch-size", type=int, default=64,              help='-')
 parser.add_argument("--save-every", type=int, default=500,             help='-')
 parser.add_argument("--ckpt-dir",   type=str, default="checkpoint/x2", help='-')
+parser.add_argument("--save-log",   type=int, default=0,               help='-')
 FLAG, unparsed = parser.parse_known_args()
 
 # =====================================================================================
@@ -37,7 +38,7 @@ EPISODES = FLAG.episodes
 MODEL_PATH = os.path.join(CKPT_DIR, f"PixelRL_SR-x{SCALE}.pt")
 # PRETRAINED_PATH = f"initial_weight/denoise_{SIGMA}_gray_ConvGRU_RMC.pt"
 SAVE_EVERY = FLAG.save_every
-SAVE_LOG = True
+SAVE_LOG = (FLAG.save_log == 1)
 
 # model settings
 N_ACTIONS = 7
