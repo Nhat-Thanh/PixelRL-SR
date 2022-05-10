@@ -142,13 +142,13 @@ class PixelWiseA3C_InnerState_ConvR:
 
             print(f"Episode {cur_episode}  / {max_episode} - loss: {loss:.6f} - sum reward: {total_reward * 255:.6f}")
 
-            loss_array.append(loss.numpy())
-            reward_array.append(total_reward.numpy())
+            loss_array.append(loss.detach().cpu().numpy())
+            reward_array.append(total_reward.detach().cpu().numpy())
 
             if cur_episode % save_every == 0:
                 reward, metric = self.evaluate(valid_set, batch_size)
                 print(f"\nEvaluate - reward: {reward * 255:.6f} - {self.metric.__name__}: {metric:.6f}")
-                val_metric_array.append(metric.numpy())
+                val_metric_array.append(metric.detach().cpu().numpy())
 
                 print(f"Save model weights to {self.model_path}")
                 torch.save(self.model.state_dict(), self.model_path)
