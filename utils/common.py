@@ -99,10 +99,8 @@ def exists(path):
     return os.path.exists(path)
 
 def exist_value(tensor, value):
-    if len(tensor.shape) < 2:
-        ValueError("tesnor must have at least 2 dimentions")
-    b = tensor.shape[0]
-    for i in range(0, b):
+    num_elements = tensor.shape[0]
+    for i in range(0, num_elements):
         sum_values = torch.sum(tensor[i] == value)
         if sum_values > 0:
             return True
@@ -140,3 +138,14 @@ def shuffle(X, Y):
     X = torch.index_select(X, dim=0, index=torch.as_tensor(indices))
     Y = torch.index_select(Y, dim=0, index=torch.as_tensor(indices))
     return X, Y
+
+# todo: draw action map based on 2d action matrix
+def draw_action_map(actions, color_table):
+    h = actions.shape[0]
+    w = actions.shape[1]
+    action_map = torch.zeros((3, h, w), dtype=torch.uint8)
+    for i in range(0, h):
+        for j in range(0, w):
+            action_map[:, i, j] = color_table[actions[i, j]]
+    return action_map
+    
