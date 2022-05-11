@@ -37,7 +37,7 @@ if CKPT_DIR == "":
 BATCH_SIZE = FLAG.batch_size
 CKPT_PATH = os.path.join(CKPT_DIR, f"ckpt-x{SCALE}.pt")
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-EPISODES = FLAG.episodes
+STEPS = FLAG.steps
 MODEL_PATH = os.path.join(CKPT_DIR, f"PixelRL_SR-x{SCALE}.pt")
 SAVE_EVERY = FLAG.save_every
 SAVE_LOG = (FLAG.save_log == 1)
@@ -75,7 +75,7 @@ def main():
     pixelRL = PixelWiseA3C_InnerState_ConvR(MODEL, T_MAX, GAMMA, BETA)
     pixelRL.setup(SCALE, OPTIMIZER, BATCH_SIZE, PSNR,  DEVICE, MODEL_PATH, CKPT_DIR)
     pixelRL.load_checkpoint(CKPT_PATH)
-    pixelRL.train(train_set, valid_set, BATCH_SIZE, EPISODES, SAVE_EVERY, SAVE_LOG)
+    pixelRL.train(train_set, valid_set, BATCH_SIZE, STEPS, SAVE_EVERY, SAVE_LOG)
 
 if __name__ == '__main__':
     main()
