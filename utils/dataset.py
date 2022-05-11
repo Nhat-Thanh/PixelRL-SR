@@ -29,7 +29,7 @@ class dataset:
         ls_images = sorted_list(subset_dir)
         scale = hr_crop_size // lr_crop_size
         # if scale == 2, assign it to 3, else assign it to 4
-        scale = 3 * (scale == 2) + 4 * (scale > 2)
+        # scale = 3 * (scale == 2) + 4 * (scale > 2)
         for image_path in ls_images:
             print(image_path)
             hr_image = read_image(image_path)
@@ -42,8 +42,8 @@ class dataset:
                     if transform:
                         subim_hr = random_transform(subim_hr)
 
-                    subim_lr = gaussian_blur(subim_hr, sigma=0.7)
-                    subim_bicucbic = make_lr(subim_lr, scale)
+                    subim_lr = gaussian_blur(subim_hr, sigma=0.55)
+                    subim_bicucbic = make_lr(subim_lr, scale + 1)
                     subim_lr = resize_bicubic(subim_lr, lr_crop_size, lr_crop_size)
 
                     subim_bicucbic = rgb2ycbcr(subim_bicucbic)

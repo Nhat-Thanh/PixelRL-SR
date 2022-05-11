@@ -65,6 +65,13 @@ class PixelRL_model(nn.Module):
     def conv_smooth(self, v):
         return self.conv_R(v)
 
+    def choose_best_actions(self, state):
+        pi, v, inner_state = self.pi_and_v(state)
+        actions_prob = torch.softmax(pi, dim=1)
+        actions = torch.argmax(actions_prob, dim=1)
+        return actions, v, inner_state
+
+
 # ======================================================================================
 # SRCNN network 
 # ======================================================================================

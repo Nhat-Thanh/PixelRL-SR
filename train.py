@@ -13,12 +13,12 @@ torch.manual_seed(1)
 # =====================================================================================
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--scale",      type=int, default=2,               help='-')
-parser.add_argument("--episodes",   type=int, default=5000,            help='-')
-parser.add_argument("--batch-size", type=int, default=64,              help='-')
-parser.add_argument("--save-every", type=int, default=500,             help='-')
-parser.add_argument("--ckpt-dir",   type=str, default="checkpoint/x2", help='-')
-parser.add_argument("--save-log",   type=int, default=0,               help='-')
+parser.add_argument("--scale",      type=int, default=2,    help='-')
+parser.add_argument("--steps",      type=int, default=5000, help='-')
+parser.add_argument("--batch-size", type=int, default=64,   help='-')
+parser.add_argument("--save-every", type=int, default=500,  help='-')
+parser.add_argument("--ckpt-dir",   type=str, default="",   help='-')
+parser.add_argument("--save-log",   type=int, default=0,    help='-')
 FLAG, unparsed = parser.parse_known_args()
 
 # =====================================================================================
@@ -30,13 +30,15 @@ SCALE = FLAG.scale
 if SCALE not in [2, 3, 4]:
     ValueError("--scale must be 2, 3 or 4")
 
-BATCH_SIZE = FLAG.batch_size
 CKPT_DIR = FLAG.ckpt_dir
+if CKPT_DIR == "":
+    CKPT_DIR = f"checkpoint/x{SCALE}"
+
+BATCH_SIZE = FLAG.batch_size
 CKPT_PATH = os.path.join(CKPT_DIR, f"ckpt-x{SCALE}.pt")
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 EPISODES = FLAG.episodes
 MODEL_PATH = os.path.join(CKPT_DIR, f"PixelRL_SR-x{SCALE}.pt")
-# PRETRAINED_PATH = f"initial_weight/denoise_{SIGMA}_gray_ConvGRU_RMC.pt"
 SAVE_EVERY = FLAG.save_every
 SAVE_LOG = (FLAG.save_log == 1)
 
@@ -71,13 +73,8 @@ def main():
     MODEL = PixelRL_model(N_ACTIONS).to(DEVICE)
     OPTIMIZER = torch.optim.Adam(MODEL.parameters(), LEARNING_RATE)
     pixelRL = PixelWiseA3C_InnerState_ConvR(MODEL, T_MAX, GAMMA, BETA)
-    pixelRL.setup(SCALE, OPTIMIZER, LEARNING_RATE, BATCH_SIZE, PSNR,  DEVICE, MODEL_PATH, CKPT_DIR)
-
+    pixelRL.setup(SCALE, OPTIMIZER, BATCH_SIZE, PSNR,  DEVICE, MODEL_PATH, CKPT_DIR)
     pixelRL.load_checkpoint(CKPT_PATH)
-    # if not exists(CKPT_PATH):
-    #     print(f"Load pre-trained model at {PRETRAINED_PATH}")
-    #     pixelRL.load_weights(PRETRAINED_PATH)
-
     pixelRL.train(train_set, valid_set, BATCH_SIZE, EPISODES, SAVE_EVERY, SAVE_LOG)
 
 if __name__ == '__main__':

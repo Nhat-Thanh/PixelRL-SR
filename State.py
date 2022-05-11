@@ -1,6 +1,6 @@
 import torch
 from neuralnet import ESPCN_model, FSRCNN_model, SRCNN_model, VDSR_model
-from utils.common import exist_value
+from utils.common import exist_value, to_cpu
 
 class State:
     def __init__(self, scale, device):
@@ -44,8 +44,8 @@ class State:
         self.tensor[:,0:3,:,:] = self.sr_images
 
     def step(self, act, inner_state):
-        act = act.detach().cpu()
-        inner_state = inner_state.detach().cpu()
+        act = to_cpu(act)
+        inner_state = to_cpu(inner_state)
         srcnn = self.sr_images.clone()
         espcn = self.sr_images.clone()
         fsrcnn = self.sr_images.clone()
@@ -63,23 +63,22 @@ class State:
 
         with torch.no_grad():
             if exist_value(act, 3):
-                srcnn[:, :, 8:-8, 8:-8] = self.SRCNN(self.sr_images).cpu()
+                espcn = to_cpu(self.ESPCN(self.lr_images))
             if exist_value(act, 4):
-                espcn = self.ESPCN(self.lr_images).cpu()
+                srcnn[:, :, 8:-8, 8:-8] = to_cpu(self.SRCNN(self.sr_images))
             if exist_value(act, 5):
-                fsrcnn = self.FSRCNN(self.lr_images).cpu()
+                vdsr = to_cpu(self.VDSR(self.sr_images))
             if exist_value(act, 6):
-                vdsr = self.VDSR(self.sr_images).cpu()
+                fsrcnn = to_cpu(self.FSRCNN(self.lr_images))
 
-
-        self.lr_images = self.lr_images.cpu()
+        self.lr_images = to_cpu(self.lr_images)
         self.sr_images = moved_image
         act = act.unsqueeze(1)
         act = torch.concat([act, act, act], 1)
-        self.sr_images = torch.where(act==3, srcnn,  self.sr_images)
-        self.sr_images = torch.where(act==4, espcn,  self.sr_images)
-        self.sr_images = torch.where(act==5, fsrcnn, self.sr_images)
-        self.sr_images = torch.where(act==6, vdsr,   self.sr_images)
+        self.sr_images = torch.where(act==3, espcn,  self.sr_images)
+        self.sr_images = torch.where(act==4, srcnn,  self.sr_images)
+        self.sr_images = torch.where(act==5, vdsr,   self.sr_images)
+        self.sr_images = torch.where(act==6, fsrcnn, self.sr_images)
 
         self.tensor[:,0:3,:,:] = self.sr_images
         self.tensor[:,-64:,:,:] = inner_state

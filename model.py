@@ -4,9 +4,14 @@ import os
 from State import State
 import torch
 from torch.distributions import Categorical
-from utils.common import exists
+from utils.common import exists, tensor2numpy
 
 torch.manual_seed(1)
+
+class logger:
+    def __init__(self, path, values) -> None:
+        self.path = path
+        self.values = values
 
 def MyEntropy(log_actions_prob, actions_prob):
     entropy = torch.stack([- torch.sum(log_actions_prob * actions_prob, dim=1)])
@@ -14,8 +19,7 @@ def MyEntropy(log_actions_prob, actions_prob):
 
 def MyLogProb(log_actions_prob, actions):
     selected_pi = log_actions_prob.gather(1, actions.unsqueeze(1))
-    return selected_pi 
-
+    return selected_pi
 
 class PixelWiseA3C_InnerState_ConvR:
     def __init__(self, model, t_max, gamma, beta=1e-2,
@@ -33,12 +37,11 @@ class PixelWiseA3C_InnerState_ConvR:
         self.past_rewards = {}
         self.past_values = {}
 
-    def setup(self, scale, optimizer, init_lr, batch_size,
+    def setup(self, scale, optimizer, batch_size,
               metric, device, model_path, ckpt_dir):
         self.batch_size = batch_size
         self.ckpt_dir = ckpt_dir
         self.device = device
-        self.initial_lr = init_lr
         self.metric = metric
         self.model_path = model_path
         self.optimizer = optimizer
@@ -47,7 +50,6 @@ class PixelWiseA3C_InnerState_ConvR:
     def sync_parameters(self):
         for md_1, md_2 in zip(self.model.modules(), self.shared_model.modules()):
             md_1._buffers = md_2._buffers.copy()
-
         for target, src in zip(self.model.parameters(), self.shared_model.parameters()):
             target.detach().copy_(src.detach())
 
@@ -80,107 +82,113 @@ class PixelWiseA3C_InnerState_ConvR:
         self.model.train(False)
         self.shared_model.train(False)
         current_state = State(self.scale, self.device)
-        rewards = []
-        metrics = []
-        isEnd = False
+        rewards, metrics = [], []
         with torch.no_grad():
+            isEnd = False
             while isEnd == False:
-                bicubic, lr, hr, isEnd = dataset.get_batch(batch_size)
-                current_state.reset(lr, bicubic)
+                bicubic, state_var, hr, isEnd = dataset.get_batch(batch_size)
+                current_state.reset(state_var, bicubic)
                 sum_reward = 0
                 for t in range(0, self.t_max):
                     prev_image = current_state.sr_images.clone()
-                    lr = current_state.tensor.to(self.device)
-                    pi, _, inner_state = self.model.pi_and_v(lr)
-    
-                    actions_prob = torch.softmax(pi, dim=1)
-                    actions = torch.argmax(actions_prob, dim=1)
-                    current_state.step(actions.cpu(), inner_state.cpu())
-    
+                    state_var = current_state.tensor.to(self.device)
+                    actions, _, inner_state = self.model.choose_best_actions(state_var)
+                    current_state.step(actions, inner_state)
+
                     # calculate reward on Y chanel only
                     reward = torch.square(hr[:,0:1] - prev_image[:,0:1]) - \
                              torch.square(hr[:,0:1] - current_state.sr_images[:,0:1])
                     sum_reward += torch.mean(reward * 255) * (self.gamma ** t)
-    
+
                 rewards.append(sum_reward)
                 metric = self.metric(hr, current_state.sr_images)
                 metrics.append(metric)
-    
+
         total_reward = torch.mean(torch.tensor(rewards))
         total_metric = torch.mean(torch.tensor(metrics))
         return total_reward, total_metric
 
-    def train(self, train_set, valid_set, batch_size, episodes, save_every, save_log=False):
-        cur_episode = 0
+    def train(self, train_set, valid_set, batch_size, steps, save_every=1, save_log=False):
+        cur_step = 0
         if self.ckpt_man is not None:
-            cur_episode = self.ckpt_man['episode']
-        max_episode = cur_episode + episodes
+            cur_step = self.ckpt_man['step']
+        max_step = cur_step + steps
         ckpt_path = os.path.join(self.ckpt_dir, f"ckpt-x{self.scale}.pt")
 
-        logging_path = {
-                "loss": os.path.join(self.ckpt_dir, "loss_array.npy"),
-                "reward": os.path.join(self.ckpt_dir, "reward_array.npy"),
-                "metric": os.path.join(self.ckpt_dir, "metric_array.npy")
-                }
+        dict_logger = { "train_loss":   logger(path=os.path.join(self.ckpt_dir, "train_losses.npy"),  values=[]),
+                        "train_reward": logger(path=os.path.join(self.ckpt_dir, "train_rewards.npy"), values=[]),
+                        "train_metric": logger(path=os.path.join(self.ckpt_dir, "train_metrics.npy"), values=[]),
+                        "val_reward":   logger(path=os.path.join(self.ckpt_dir, "val_rewards.npy"),   values=[]),
+                        "val_metric":   logger(path=os.path.join(self.ckpt_dir, "val_metrics.npy"),   values=[]) }
 
-        loss_array = []
-        reward_array = []
-        val_metric_array = []
-
-        if exists(logging_path["loss"]):
-            loss_array = np.load(logging_path["loss"]).tolist()
-        if exists(logging_path["reward"]):
-            reward_array = np.load(logging_path["reward"]).tolist()
-        if exists(logging_path["metric"]):
-            val_metric_array = np.load(logging_path["metric"]).tolist()
+        for key in dict_logger.keys():
+            if exists(dict_logger[key].path):
+                dict_logger[key].values = np.load(dict_logger[key].path).tolist()
 
         self.current_state = State(self.scale, self.device)
-        while cur_episode < max_episode:
-            cur_episode += 1
+        train_loss_cache = []
+        train_reward_cache = []
+        train_metric_cache = []
+        while cur_step < max_step:
+            cur_step += 1
             bicubic, lr, hr, _ = train_set.get_batch(batch_size)
-            total_reward, loss = self.train_step(bicubic, lr, hr)
+            train_reward, train_loss, train_metric = self.train_step(bicubic, lr, hr)
+            train_reward_cache.append(train_reward)
+            train_loss_cache.append(train_loss)
+            train_metric_cache.append(train_metric)
 
-            print(f"Episode {cur_episode}  / {max_episode} - loss: {loss:.6f} - sum reward: {total_reward * 255:.6f}")
+            if cur_step % save_every == 0:
+                train_reward = torch.mean(torch.tensor(train_reward_cache))
+                train_loss = torch.mean(torch.tensor(train_loss_cache))
+                train_metric = torch.mean(torch.tensor(train_metric_cache))
+                val_reward, val_metric = self.evaluate(valid_set, batch_size)
 
-            loss_array.append(loss.detach().cpu().numpy())
-            reward_array.append(total_reward.detach().cpu().numpy())
-
-            if cur_episode % save_every == 0:
-                reward, metric = self.evaluate(valid_set, batch_size)
-                print(f"\nEvaluate - reward: {reward * 255:.6f} - {self.metric.__name__}: {metric:.6f}")
-                val_metric_array.append(metric.detach().cpu().numpy())
+                print(f"Step {cur_step}  / {max_step}",
+                        f"- loss: {train_loss:.6f}",
+                        f"- reward: {train_reward * 255:.6f}",
+                        f"- {self.metric.__name__}: {train_metric:.4f}",
+                        f"- val_reward: {val_reward * 255:.6f}",
+                        f"- val_{self.metric.__name__}: {val_metric:.4f}")
 
                 print(f"Save model weights to {self.model_path}")
                 torch.save(self.model.state_dict(), self.model_path)
 
                 print(f"Save checkpoint to {ckpt_path}\n")
-                torch.save({ 'episode': cur_episode,
+                torch.save({ 'step': cur_step,
                              'model': self.model.state_dict(),
                              'shared_model': self.shared_model.state_dict(),
                              'optimizer': self.optimizer.state_dict() }, ckpt_path)
 
-            # self.optimizer.param_groups[0]['lr'] = self.initial_lr - ((1 - cur_episode / max_episode) ** 0.9)
-        if save_log:
-            np.save(logging_path["loss"], np.array(loss_array, dtype=np.float32))
-            np.save(logging_path["reward"], np.array(reward_array, dtype=np.float32))
-            np.save(logging_path["metric"], np.array(val_metric_array, dtype=np.float32))
+                if save_log == False:
+                    continue
+                dict_logger["train_loss"].values.append(train_loss)
+                dict_logger["train_reward"].values.append(train_reward)
+                dict_logger["train_metric"].values.append(train_metric)
+                dict_logger["val_reward"].values.append(val_reward)
+                dict_logger["val_metric"].values.append(val_metric)
 
-    def train_step(self, bicubic, lr, hr):
+        if save_log:
+            for key in dict_logger.keys():
+                values = torch.tensor(dict_logger[key].values)
+                values = tensor2numpy(values)
+                np.save(dict_logger[key].path, values)
+
+    def train_step(self, bicubic, state_var, hr):
         self.model.train(True)
         self.shared_model.train(True)
 
-        self.current_state.reset(lr, bicubic)
+        self.current_state.reset(state_var, bicubic)
         total_reward = 0.0
         reward = 0.0
         for t in range(0, self.t_max):
             prev_images = self.current_state.sr_images.clone()
-            lr = self.current_state.tensor.to(self.device)
-            pi, v, inner_state = self.model.pi_and_v(lr)
+            state_var = self.current_state.tensor.to(self.device)
+            pi, v, inner_state = self.model.pi_and_v(state_var)
 
             actions_prob = torch.softmax(pi, dim=1)
             log_actions_prob = torch.log_softmax(pi, dim=1)
             prob_trans = actions_prob.permute([0, 2, 3, 1])
-            actions = Categorical(prob_trans).sample().detach()
+            actions = Categorical(prob_trans).sample()
             self.current_state.step(actions, inner_state)
 
             reward = (torch.square(hr[:,0:1] - prev_images[:,0:1]) - \
@@ -191,6 +199,8 @@ class PixelWiseA3C_InnerState_ConvR:
             self.past_entropy[t] = MyEntropy(log_actions_prob, actions_prob)
             self.past_values[t] = v
             total_reward += torch.mean(reward) * (self.gamma ** t)
+
+        total_metric = self.metric(hr, self.current_state.sr_images)
 
         pi_loss = 0.0
         v_loss = 0.0
@@ -218,9 +228,9 @@ class PixelWiseA3C_InnerState_ConvR:
         self.sync_parameters()
 
         # reset history
-        self.past_log_prob = {}
-        self.past_entropy = {}
-        self.past_values = {}
-        self.past_rewards = {}
+        # self.past_log_prob = {}
+        # self.past_entropy = {}
+        # self.past_values = {}
+        # self.past_rewards = {}
 
-        return total_reward, total_loss
+        return total_reward, total_loss, total_metric

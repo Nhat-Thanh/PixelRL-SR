@@ -22,7 +22,7 @@ FLAG, unparsed = parser.parse_known_args()
 
 SCALE = FLAG.scale
 if SCALE not in [2, 3, 4]:
-    ValueError("--scale must be 2, 3 or 4")
+    ValueError("scale must be 2, 3 or 4")
 
 MODEL_PATH = FLAG.ckpt_path
 if MODEL_PATH == "":
@@ -42,7 +42,6 @@ LS_LR_PATHS = sorted_list(f"dataset/test/x{SCALE}/data")
 # =====================================================================================
 
 def main():
-
     CURRENT_STATE = State(SCALE, DEVICE)
 
     MODEL = PixelRL_model(N_ACTIONS).to(DEVICE)
@@ -71,16 +70,11 @@ def main():
 
         with torch.no_grad():
             CURRENT_STATE.reset(lr, bicubic)
-
             sum_reward = 0
             for t in range(0, T_MAX):
                 prev_img = CURRENT_STATE.sr_images.clone()
                 statevar = CURRENT_STATE.tensor.to(DEVICE)
-                pi, _, inner_state = MODEL.pi_and_v(statevar)
-
-                actions_prob = torch.softmax(pi, dim=1).cpu()
-                actions = torch.argmax(actions_prob, dim=1)
-                inner_state = inner_state.cpu()
+                actions, _, inner_state = MODEL.choose_best_actions(statevar)
 
                 CURRENT_STATE.step(actions, inner_state)
                 # Calculate reward on Y chanel only

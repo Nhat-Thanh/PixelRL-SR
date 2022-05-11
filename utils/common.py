@@ -148,4 +148,9 @@ def draw_action_map(actions, color_table):
         for j in range(0, w):
             action_map[:, i, j] = color_table[actions[i, j]]
     return action_map
-    
+
+def tensor2numpy(tensor):
+    return tensor.detach().cpu().numpy()
+
+def to_cpu(tensor):
+    return tensor.detach().cpu()

@@ -32,7 +32,7 @@ MODEL_PATH = FLAG.model_path
 if MODEL_PATH == "":
     MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
 
-DRAW_ACTION_MAP = FLAG.draw_action_map
+DRAW_ACTION_MAP = (FLAG.draw_action_map == 1)
 ACTION_MAP_DIR = "action_maps"
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -68,38 +68,34 @@ def main():
         MODEL.load_state_dict(torch.load(MODEL_PATH, torch.device(DEVICE)))
     MODEL.eval()
 
-    lr = read_image(IMAGE_PATH)
-    lr = gaussian_blur(lr, sigma=0.2)
-    bicubic = upscale(lr, SCALE)
+    lr_image = read_image(IMAGE_PATH)
+    lr_image = gaussian_blur(lr_image, sigma=0.2)
+    bicubic = upscale(lr_image, SCALE)
     write_image("bicubic.png", bicubic)
 
     bicubic = rgb2ycbcr(bicubic)
-    lr = rgb2ycbcr(lr)
+    lr_image = rgb2ycbcr(lr_image)
 
     bicubic = norm01(bicubic).unsqueeze(0)
-    lr = norm01(lr).unsqueeze(0)
+    lr_image = norm01(lr_image).unsqueeze(0)
 
-    CURRENT_STATE.reset(lr, bicubic)
+    CURRENT_STATE.reset(lr_image, bicubic)
     with torch.no_grad():
         for i in range(0, T_MAX):
-            pi, _, inner_state = MODEL.pi_and_v(CURRENT_STATE.tensor.to(DEVICE))
-
-            actions_prob = torch.softmax(pi, dim=1).cpu()
-            actions = torch.argmax(actions_prob, dim=1)
-            inner_state = inner_state.cpu()
-
+            state_var = CURRENT_STATE.tensor.to(DEVICE)
+            actions, _, inner_state = MODEL.choose_best_actions(state_var)
             CURRENT_STATE.step(actions, inner_state)
 
             if DRAW_ACTION_MAP:
-                actions = actions[0].cpu().numpy()
+                actions = tensor2numpy(actions[0])
                 action_map = draw_action_map(actions, COLOR_TABLE)
                 write_image(os.path.join(ACTION_MAP_DIR, f"step_{i}.png"), action_map)
 
-    sr = torch.clip(CURRENT_STATE.sr_images[0], 0.0, 1.0)
-    sr = denorm01(sr)
-    sr = sr.type(torch.uint8)
-    sr = ycbcr2rgb(sr)
-    write_image("sr.png", sr)
+    sr_image = torch.clip(CURRENT_STATE.sr_images[0], 0.0, 1.0)
+    sr_image = denorm01(sr_image)
+    sr_image = sr_image.type(torch.uint8)
+    sr_image = ycbcr2rgb(sr_image)
+    write_image("sr.png", sr_image)
 
 if __name__ == '__main__':
     main()
