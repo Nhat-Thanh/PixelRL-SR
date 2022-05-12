@@ -57,7 +57,7 @@ You can get the models here:
 - [PixelRL_SR-x3.pt](checkpoint/x3/PixelRL_SR-x3.pt)
 - [PixelRL_SR-x4.pt](checkpoint/x4/PixelRL_SR-x4.pt)
 
-The log informations of my training process are plot below, these plot lines are smoothed by [Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average) with alpha=0.2:
+The log informations of my training process are ploted below, these plot lines are smoothed by [Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average) with alpha=0.2:
 <div align="center">
   <br>
   <img src="README/scale-x2.png" width=1000/></br>
