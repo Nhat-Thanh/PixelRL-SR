@@ -32,6 +32,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 N_ACTIONS = 7
 GAMMA = 0.95
 T_MAX = 5
+SIGMA = 0.3 if SCALE == 2 else 0.2
 
 LS_HR_PATHS = sorted_list(f"dataset/test/x{SCALE}/labels")
 LS_LR_PATHS = sorted_list(f"dataset/test/x{SCALE}/data")
@@ -56,7 +57,7 @@ def main():
         lr_image_path = LS_LR_PATHS[i]
         hr = read_image(hr_image_path)
         lr = read_image(lr_image_path)
-        lr = gaussian_blur(lr, sigma=0.3)
+        lr = gaussian_blur(lr, sigma=SIGMA)
         bicubic = upscale(lr, SCALE)
 
         bicubic = rgb2ycbcr(bicubic)
