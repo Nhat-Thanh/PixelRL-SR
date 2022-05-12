@@ -52,8 +52,7 @@ You can get the weights of models here:
 - [PixelRL_SR-x3.pt](checkpoint/x3/PixelRL_SR-x3.pt)
 - [PixelRL_SR-x4.pt](checkpoint/x4/PixelRL_SR-x4.pt)
 
-The log informations of my training process are plot below:
-
+The log informations of my training process are plot below, these plot line are smoothed by [Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average) with alpha = 0.2:
 <div align="center">
   <br>
   <img src="README/scale-x2.png" width=800/></br>
@@ -74,16 +73,17 @@ The log informations of my training process are plot below:
 ## Test
 I use **Set5** as the test set. After Training, you can test models with scale factors **x2, x3, x4**, the result is calculated by compute average PSNR of all images.
 ```
-python test.py --scale=2 --ckpt-path=""
+python test.py --scale=2 --ckpt-path="default"
 ```
 
-**--ckpt-path=""** mean you are using default weights path, aka **checkpoint/x{scale}/PixelRL_SR-x{scale}.pt**. If you want to use your trained weights, you can pass yours to **--ckpt-path**.
+**--ckpt-path="default"** mean you are using default weights path, aka **checkpoint/x{scale}/PixelRL_SR-x{scale}.pt**. If you want to use your trained weights, you can pass yours to **--ckpt-path**.
 
 ## Demo 
 After Training, you can test models with this command, the result is the **sr.png**.
 ```
-python demo.py --scale=2           \
-               --draw-action-map=0 \
+python demo.py --scale=2             \
+               --ckpt-path="default" \
+               --draw-action-map=0   \
                --image-path="dataset/test2.png"
 ```
 
