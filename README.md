@@ -60,17 +60,17 @@ You can get the weights of models here:
 The log informations of my training process are plot below, these plot line are smoothed by [Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average) with alpha = 0.2:
 <div align="center">
   <br>
-  <img src="README/scale-x2.png" width=800/></br>
+  <img src="README/scale-x2.png" width=1000/></br>
   <b>Loss (Left), reward (center), PSNR (right) of scale x2.</b>
   
   <br>
   <br>
-  <img src="README/scale-x3.png" width=800/></br>
+  <img src="README/scale-x3.png" width=1000/></br>
   <b>Loss (Left), reward (center), PSNR (right) of scale x3.</b>
     
   <br>
   <br>
-  <img src="README/scale-x4.png" width=800/></br>
+  <img src="README/scale-x4.png" width=1000/></br>
   <b>Loss (Left), reward (center), PSNR (right) of scale x4.</b>
 </div>
 
