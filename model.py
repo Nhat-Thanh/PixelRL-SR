@@ -86,7 +86,7 @@ class PixelWiseA3C_InnerState_ConvR:
         with torch.no_grad():
             isEnd = False
             while isEnd == False:
-                bicubic, lr, hr, isEnd = dataset.get_batch(batch_size)
+                bicubic, lr, hr, isEnd = dataset.get_batch(batch_size, shuffle_each_epoch=False)
                 current_state.reset(lr, bicubic)
                 sum_reward = 0
                 for t in range(0, self.t_max):
@@ -167,11 +167,12 @@ class PixelWiseA3C_InnerState_ConvR:
                 dict_logger["val_reward"].values.append(val_reward)
                 dict_logger["val_metric"].values.append(val_metric)
 
-        if save_log:
-            for key in dict_logger.keys():
-                values = torch.tensor(dict_logger[key].values)
-                values = tensor2numpy(values)
-                np.save(dict_logger[key].path, values)
+        if save_log == False:
+            return
+        for key in dict_logger.keys():
+            values = torch.tensor(dict_logger[key].values)
+            values = tensor2numpy(values)
+            np.save(dict_logger[key].path, values)
 
     def train_step(self, bicubic, lr, hr):
         self.model.train(True)
@@ -190,10 +191,10 @@ class PixelWiseA3C_InnerState_ConvR:
             prob_trans = actions_prob.permute([0, 2, 3, 1])
             actions = Categorical(prob_trans).sample()
             self.current_state.step(actions, inner_state)
-
+            
+            # calculate reward on Y chanel only
             reward = (torch.square(hr[:,0:1] - prev_images[:,0:1]) - \
                       torch.square(hr[:,0:1] - self.current_state.sr_images[:,0:1])) * 255
-
             self.past_rewards[t] = reward.to(self.device)
             self.past_log_prob[t] = MyLogProb(log_actions_prob, actions)
             self.past_entropy[t] = MyEntropy(log_actions_prob, actions_prob)
@@ -204,7 +205,6 @@ class PixelWiseA3C_InnerState_ConvR:
 
         pi_loss = 0.0
         v_loss = 0.0
-        # R = 0 in author's source code
         R = torch.zeros_like(v).to(self.device)
         for k in reversed(range(0, self.t_max)):
             R = self.model.conv_smooth(R * self.gamma) + self.past_rewards[k]
@@ -226,11 +226,5 @@ class PixelWiseA3C_InnerState_ConvR:
         self.optimizer.step()
         self.copy_grad(src=self.model, target=self.shared_model)
         self.sync_parameters()
-
-        # reset history
-        # self.past_log_prob = {}
-        # self.past_entropy = {}
-        # self.past_values = {}
-        # self.past_rewards = {}
 
         return total_reward, total_loss, total_metric
