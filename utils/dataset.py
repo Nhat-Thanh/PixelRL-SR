@@ -43,7 +43,7 @@ class dataset:
                         subim_hr = random_transform(subim_hr)
 
                     subim_lr = gaussian_blur(subim_hr, sigma=0.55)
-                    subim_bicucbic = make_lr(subim_lr, scale + 1)
+                    subim_bicucbic = make_lr(subim_lr, scale)
                     subim_lr = resize_bicubic(subim_lr, lr_crop_size, lr_crop_size)
 
                     subim_bicucbic = rgb2ycbcr(subim_bicucbic)
