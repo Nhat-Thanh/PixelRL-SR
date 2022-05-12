@@ -60,9 +60,11 @@ The log informations of my training process are plot below:
   <b>Loss (Left), reward (center), PSNR (right) of scale x2.</b>
   
   <br>
+  <br>
   <img src="README/scale-x3.png" width=800/></br>
   <b>Loss (Left), reward (center), PSNR (right) of scale x3.</b>
     
+  <br>
   <br>
   <img src="README/scale-x4.png" width=800/></br>
   <b>Loss (Left), reward (center), PSNR (right) of scale x4.</b>
