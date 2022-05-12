@@ -138,16 +138,17 @@ class PixelWiseA3C_InnerState_ConvR:
             train_metric_cache.append(train_metric)
 
             if cur_step % save_every == 0:
-                train_reward = torch.mean(torch.tensor(train_reward_cache))
+                train_reward = torch.mean(torch.tensor(train_reward_cache)) * 255
                 train_loss = torch.mean(torch.tensor(train_loss_cache))
                 train_metric = torch.mean(torch.tensor(train_metric_cache))
                 val_reward, val_metric = self.evaluate(valid_set, batch_size)
+                val_reward = val_reward * 255
 
                 print(f"Step {cur_step}  / {max_step}",
                         f"- loss: {train_loss:.6f}",
-                        f"- reward: {train_reward * 255:.6f}",
+                        f"- reward: {train_reward:.6f}",
                         f"- {self.metric.__name__}: {train_metric:.4f}",
-                        f"- val_reward: {val_reward * 255:.6f}",
+                        f"- val_reward: {val_reward:.6f}",
                         f"- val_{self.metric.__name__}: {val_metric:.4f}")
 
                 print(f"Save model weights to {self.model_path}")
