@@ -86,8 +86,8 @@ class PixelWiseA3C_InnerState_ConvR:
         with torch.no_grad():
             isEnd = False
             while isEnd == False:
-                bicubic, state_var, hr, isEnd = dataset.get_batch(batch_size)
-                current_state.reset(state_var, bicubic)
+                bicubic, lr, hr, isEnd = dataset.get_batch(batch_size)
+                current_state.reset(lr, bicubic)
                 sum_reward = 0
                 for t in range(0, self.t_max):
                     prev_image = current_state.sr_images.clone()
@@ -173,11 +173,11 @@ class PixelWiseA3C_InnerState_ConvR:
                 values = tensor2numpy(values)
                 np.save(dict_logger[key].path, values)
 
-    def train_step(self, bicubic, state_var, hr):
+    def train_step(self, bicubic, lr, hr):
         self.model.train(True)
         self.shared_model.train(True)
 
-        self.current_state.reset(state_var, bicubic)
+        self.current_state.reset(lr, bicubic)
         total_reward = 0.0
         reward = 0.0
         for t in range(0, self.t_max):
