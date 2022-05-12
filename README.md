@@ -1,6 +1,6 @@
 # [Pytorch] Super-Resolution using Reinforcement Learning
 
-Implementation of Super-Resolution model using Reinforement learning based on **Multi-Step Reinforcement Learning for Single Image Super-Resolution** paper with Pytorch.
+Implementation of Super-Resolution model using Reinforcement learning based on **Multi-Step Reinforcement Learning for Single Image Super-Resolution** paper with Pytorch.
 
 ## Contents
 - [Introduction](#introduction)
@@ -11,8 +11,8 @@ Implementation of Super-Resolution model using Reinforement learning based on **
 - [References](#references)
 
 ## **Introduction**
-This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of Reinforement learning model, I use my 4 available Super-Resolution models for actions instead of 
-EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions.
+This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of Reinforement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions. 
+I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
 
 <div align="center">
 
@@ -32,7 +32,7 @@ EDSR and ESRGAN in this implementation. Because changing the actions are easy so
 
 ## Train
 Dataset:
-   - Train: T91 + General100 + BSD100
+   - Train: T91 + General100 + BSD200
    - Validation: Set14
    - Test: Set5
 
@@ -81,7 +81,7 @@ I use **Set5** as the test set. After Training, you can test models with scale f
 python test.py --scale=2 --ckpt-path="default"
 ```
 
-**--ckpt-path="default"** mean you are using default weights path, aka **checkpoint/x{scale}/PixelRL_SR-x{scale}.pt**. If you want to use your trained weights, you can pass yours to **--ckpt-path**.
+**--ckpt-path="default"** mean you are using default model path, aka **checkpoint/x{scale}/PixelRL_SR-x{scale}.pt**. If you want to use your trained model, you can pass yours to **--ckpt-path**.
 
 ## Demo 
 After Training, you can test models with this command, the result is the **sr.png**.
@@ -89,7 +89,7 @@ After Training, you can test models with this command, the result is the **sr.pn
 python demo.py --scale=2             \
                --ckpt-path="default" \
                --draw-action-map=0   \
-               --image-path="dataset/test2.png"
+               --image-path="dataset/test1.png"
 ```
 
 **--draw-action-map**: If it's equal to **1**, an action map will be save to **action_maps** directory every step.
