@@ -11,8 +11,8 @@ Implementation of Super-Resolution model using Reinforcement learning based on *
 - [References](#references)
 
 ## **Introduction**
-This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of Reinforement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions. 
-I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
+This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of reinforcement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions. 
+I ignore **patch-wise agent** and keep **t_max=5** as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
 
 <div align="center">
 
