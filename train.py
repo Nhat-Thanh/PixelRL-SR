@@ -31,7 +31,7 @@ if SCALE not in [2, 3, 4]:
     ValueError("--scale must be 2, 3 or 4")
 
 CKPT_DIR = FLAG.ckpt_dir
-if CKPT_DIR == "":
+if (CKPT_DIR == "") or (CKPT_DIR == "default"):
     CKPT_DIR = f"checkpoint/x{SCALE}"
 
 BATCH_SIZE = FLAG.batch_size
