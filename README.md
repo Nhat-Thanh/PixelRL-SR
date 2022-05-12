@@ -12,7 +12,7 @@ Implementation of Super-Resolution model using Reinforement learning based on **
 
 ## **Introduction**
 This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of Reinforement learning model, I use my 4 available Super-Resolution models for actions instead of 
-EDSR and ESRGAN in this implementation. Cause changing the actions are easy so you can use other super-resolution models as your actions.
+EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions.
 
 <div align="center">
 
@@ -31,16 +31,21 @@ EDSR and ESRGAN in this implementation. Cause changing the actions are easy so y
 </div>
 
 ## Train
+Dataset:
+   - Train: T91 + General100 + BSD100
+   - Validation: Set14
+   - Test: Set5
+
 You run this command to begin the training:
 ```
 python train.py --scale=2              \
                 --steps=2000           \
                 --batch-size=64        \
                 --save-every=50        \
-                --save-log=1           \
+                --save-log=0           \
                 --ckpt-dir="checkpoint/x2"
 ```
-- **save-log**: if it's equal to **1**, **train loss, train rewards, train metrics, validation rewards, validation metrics** will be saved every **save-every** steps.
+- **--save-log**: if it's equal to **1**, **train loss, train rewards, train metrics, validation rewards, validation metrics** will be saved every **save-every** steps.
 
 **NOTE**: if you want to re-train a new model, you should delete all files in **checkpoint** directory. Your checkpoint will be saved when above command finishs and can be used for the next times, so you can train a model on Google Colab without taking care of GPU time limit.
 
@@ -111,7 +116,8 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
 
 ## References
 - Multi-Step Reinforcement Learning for Single Image Super-Resolution: https://ieeexplore.ieee.org/document/9150927
-- T91, BSD200: http://vllab.ucmerced.edu/wlai24/LapSRN/results/SR_training_datasets.zip
+- Fully Convolutional Network with Reinforcement Learning for Image Processing: https://arxiv.org/abs/1912.07190
+- T91, General100, BSD200: http://vllab.ucmerced.edu/wlai24/LapSRN/results/SR_training_datasets.zip
 - Set5: https://filebox.ece.vt.edu/~jbhuang/project/selfexsr/Set5_SR.zip
 - Set14: https://filebox.ece.vt.edu/~jbhuang/project/selfexsr/Set14_SR.zip
 - BSD100: https://filebox.ece.vt.edu/~jbhuang/project/selfexsr/BSD100_SR.zip
