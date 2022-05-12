@@ -25,7 +25,7 @@ if SCALE not in [2, 3, 4]:
     ValueError("scale must be 2, 3 or 4")
 
 MODEL_PATH = FLAG.ckpt_path
-if MODEL_PATH == "":
+if (MODEL_PATH == "") or (MODEL_PATH == "default"):
     MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'

@@ -29,7 +29,7 @@ if SCALE not in [2, 3, 4]:
 IMAGE_PATH = FLAG.image_path
 
 MODEL_PATH = FLAG.model_path
-if MODEL_PATH == "":
+if (MODEL_PATH == "") or (MODEL_PATH == "default"):
     MODEL_PATH = f"checkpoint/x{SCALE}/PixelRL_SR-x{SCALE}.pt"
 
 DRAW_ACTION_MAP = (FLAG.draw_action_map == 1)
