@@ -159,7 +159,11 @@ class PixelWiseA3C_InnerState_ConvR:
                              'model': self.model.state_dict(),
                              'shared_model': self.shared_model.state_dict(),
                              'optimizer': self.optimizer.state_dict() }, ckpt_path)
-
+                
+                train_loss_buffer = []
+                train_reward_buffer = []
+                train_metric_buffer = []
+                
                 if save_log == False:
                     continue
                 dict_logger["train_loss"].values.append(train_loss)
