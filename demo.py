@@ -24,7 +24,7 @@ FLAG, unparsed = parser.parse_known_args()
 
 SCALE = FLAG.scale
 if SCALE not in [2, 3, 4]:
-    ValueError("--scale must be 2, 3 or 4")
+    raise ValueError("--scale must be 2, 3 or 4")
 
 IMAGE_PATH = FLAG.image_path
 

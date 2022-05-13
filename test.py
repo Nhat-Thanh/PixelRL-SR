@@ -22,7 +22,7 @@ FLAG, unparsed = parser.parse_known_args()
 
 SCALE = FLAG.scale
 if SCALE not in [2, 3, 4]:
-    ValueError("scale must be 2, 3 or 4")
+    raise ValueError("scale must be 2, 3 or 4")
 
 MODEL_PATH = FLAG.ckpt_path
 if (MODEL_PATH == "") or (MODEL_PATH == "default"):
@@ -48,7 +48,7 @@ def main():
     MODEL = PixelRL_model(N_ACTIONS).to(DEVICE)
     if exists(MODEL_PATH):
         MODEL.load_state_dict(torch.load(MODEL_PATH, torch.device(DEVICE)))
-    MODEL.train(False)
+    MODEL.eval()
 
     reward_array = []
     metric_array = []

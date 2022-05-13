@@ -132,7 +132,7 @@ def random_transform(src):
 
 def shuffle(X, Y):
     if X.shape[0] != Y.shape[0]:
-        ValueError("X and Y must have the same number of elements")
+        raise ValueError("X and Y must have the same number of elements")
     indices = np.arange(0, X.shape[0])
     np.random.shuffle(indices)
     X = torch.index_select(X, dim=0, index=torch.as_tensor(indices))

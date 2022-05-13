@@ -19,16 +19,15 @@ parser.add_argument("--batch-size", type=int, default=64,   help='-')
 parser.add_argument("--save-every", type=int, default=500,  help='-')
 parser.add_argument("--ckpt-dir",   type=str, default="",   help='-')
 parser.add_argument("--save-log",   type=int, default=0,    help='-')
-FLAG, unparsed = parser.parse_known_args()
 
 # =====================================================================================
 # Global variables
 # =====================================================================================
 
-# training settings
+FLAG, unparsed = parser.parse_known_args()
 SCALE = FLAG.scale
 if SCALE not in [2, 3, 4]:
-    ValueError("--scale must be 2, 3 or 4")
+    raise ValueError("--scale must be 2, 3 or 4")
 
 CKPT_DIR = FLAG.ckpt_dir
 if (CKPT_DIR == "") or (CKPT_DIR == "default"):

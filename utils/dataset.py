@@ -68,7 +68,7 @@ class dataset:
 
     def load_data(self, shuffle_arrays=True):
         if not exists(self.lr_file):
-            ValueError(f"\n{self.lr_file} and {self.hr_file} DO NOT EXIST\n")
+            raise ValueError(f"\n{self.lr_file} and {self.hr_file} DO NOT EXIST\n")
         self.bicubic = np.load(self.bicubic_file)
         self.lr = np.load(self.lr_file)
         self.hr = np.load(self.hr_file)

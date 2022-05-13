@@ -11,8 +11,8 @@ Implementation of Super-Resolution model using Reinforcement learning based on *
 - [References](#references)
 
 ## **Introduction**
-This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of reinforcement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions. 
-I ignore **patch-wise agent** and keep **t_max=5** as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
+This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of Reinforement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions. 
+I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
 
 <div align="center">
 
@@ -105,8 +105,8 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
 |  Dataset  |   Set5  |  Set14  |  BSD100 | Urban100 |
 |:---------:|:-------:|:-------:|:-------:|:--------:|
 |     x2    | 38.7333 | 34.4900 | 34.4501 | 31.6963  |
-|     x3    | 34.6914 | 31.3248 | 31.3525 |     X    |
-|     x4    | 32.0646 | 29.3973 | 29.7331 | 27.0724  |
+|     x3    | 34.6700 | 31.3102 | 31.3425 |     X    |
+|     x4    | 32.0406 | 29.3773 | 29.7230 | 27.0564  |
 
   <br/>
 

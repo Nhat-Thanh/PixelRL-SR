@@ -126,21 +126,21 @@ class PixelWiseA3C_InnerState_ConvR:
                 dict_logger[key].values = np.load(dict_logger[key].path).tolist()
 
         self.current_state = State(self.scale, self.device)
-        train_loss_cache = []
-        train_reward_cache = []
-        train_metric_cache = []
+        train_loss_buffer = []
+        train_reward_buffer = []
+        train_metric_buffer = []
         while cur_step < max_step:
             cur_step += 1
             bicubic, lr, hr, _ = train_set.get_batch(batch_size)
             train_reward, train_loss, train_metric = self.train_step(bicubic, lr, hr)
-            train_reward_cache.append(train_reward)
-            train_loss_cache.append(train_loss)
-            train_metric_cache.append(train_metric)
+            train_reward_buffer.append(train_reward)
+            train_loss_buffer.append(train_loss)
+            train_metric_buffer.append(train_metric)
 
             if cur_step % save_every == 0:
-                train_reward = torch.mean(torch.tensor(train_reward_cache)) * 255
-                train_loss = torch.mean(torch.tensor(train_loss_cache))
-                train_metric = torch.mean(torch.tensor(train_metric_cache))
+                train_reward = torch.mean(torch.tensor(train_reward_buffer)) * 255
+                train_loss = torch.mean(torch.tensor(train_loss_buffer))
+                train_metric = torch.mean(torch.tensor(train_metric_buffer))
                 val_reward, val_metric = self.evaluate(valid_set, batch_size)
                 val_reward = val_reward * 255
 
