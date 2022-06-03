@@ -3,7 +3,8 @@ from neuralnet import PixelRL_model
 from State import State
 import torch
 from utils.common import *
-
+import sys
+sys.dont_write_bytecode = True
 torch.manual_seed(1)
 
 # =====================================================================================
@@ -91,7 +92,7 @@ def main():
                 action_map = draw_action_map(actions, COLOR_TABLE)
                 write_image(os.path.join(ACTION_MAP_DIR, f"step_{i}.png"), action_map)
 
-    sr_image = torch.clip(CURRENT_STATE.sr_images[0], 0.0, 1.0)
+    sr_image = torch.clip(CURRENT_STATE.sr_image[0], 0.0, 1.0)
     sr_image = denorm01(sr_image)
     sr_image = sr_image.type(torch.uint8)
     sr_image = ycbcr2rgb(sr_image)

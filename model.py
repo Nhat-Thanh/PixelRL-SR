@@ -90,18 +90,18 @@ class PixelWiseA3C_InnerState_ConvR:
                 current_state.reset(lr, bicubic)
                 sum_reward = 0
                 for t in range(0, self.t_max):
-                    prev_image = current_state.sr_images.clone()
+                    prev_image = current_state.sr_image.clone()
                     state_var = current_state.tensor.to(self.device)
                     actions, _, inner_state = self.model.choose_best_actions(state_var)
                     current_state.step(actions, inner_state)
 
                     # calculate reward on Y chanel only
                     reward = torch.square(hr[:,0:1] - prev_image[:,0:1]) - \
-                             torch.square(hr[:,0:1] - current_state.sr_images[:,0:1])
+                             torch.square(hr[:,0:1] - current_state.sr_image[:,0:1])
                     sum_reward += torch.mean(reward * 255) * (self.gamma ** t)
 
                 rewards.append(sum_reward)
-                metric = self.metric(hr, current_state.sr_images)
+                metric = self.metric(hr, current_state.sr_image)
                 metrics.append(metric)
 
         total_reward = torch.mean(torch.tensor(rewards))
@@ -187,7 +187,7 @@ class PixelWiseA3C_InnerState_ConvR:
         total_reward = 0.0
         reward = 0.0
         for t in range(0, self.t_max):
-            prev_images = self.current_state.sr_images.clone()
+            prev_images = self.current_state.sr_image.clone()
             state_var = self.current_state.tensor.to(self.device)
             pi, v, inner_state = self.model.pi_and_v(state_var)
 
@@ -199,14 +199,14 @@ class PixelWiseA3C_InnerState_ConvR:
             
             # calculate reward on Y chanel only
             reward = (torch.square(hr[:,0:1] - prev_images[:,0:1]) - \
-                      torch.square(hr[:,0:1] - self.current_state.sr_images[:,0:1])) * 255
+                      torch.square(hr[:,0:1] - self.current_state.sr_image[:,0:1])) * 255
             self.past_rewards[t] = reward.to(self.device)
             self.past_log_prob[t] = MyLogProb(log_actions_prob, actions)
             self.past_entropy[t] = MyEntropy(log_actions_prob, actions_prob)
             self.past_values[t] = v
             total_reward += torch.mean(reward) * (self.gamma ** t)
 
-        total_metric = self.metric(hr, self.current_state.sr_images)
+        total_metric = self.metric(hr, self.current_state.sr_image)
 
         pi_loss = 0.0
         v_loss = 0.0

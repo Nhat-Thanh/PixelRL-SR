@@ -3,6 +3,8 @@ from neuralnet import PixelRL_model
 from State import State
 import torch
 from utils.common import *
+import sys
+sys.dont_write_bytecode = True
 
 torch.manual_seed(1)
 
@@ -73,18 +75,18 @@ def main():
             CURRENT_STATE.reset(lr, bicubic)
             sum_reward = 0
             for t in range(0, T_MAX):
-                prev_img = CURRENT_STATE.sr_images.clone()
+                prev_img = CURRENT_STATE.sr_image.clone()
                 statevar = CURRENT_STATE.tensor.to(DEVICE)
                 actions, _, inner_state = MODEL.choose_best_actions(statevar)
 
                 CURRENT_STATE.step(actions, inner_state)
                 # Calculate reward on Y chanel only
                 reward = torch.square(hr[:,0:1] - prev_img[:,0:1]) - \
-                         torch.square(hr[:,0:1] - CURRENT_STATE.sr_images[:,0:1])
+                         torch.square(hr[:,0:1] - CURRENT_STATE.sr_image[:,0:1])
 
                 sum_reward += torch.mean(reward * 255) * (GAMMA ** t)
 
-            sr = torch.clip(CURRENT_STATE.sr_images, 0.0, 1.0)
+            sr = torch.clip(CURRENT_STATE.sr_image, 0.0, 1.0)
             psnr = PSNR(hr, sr)
             metric_array.append(psnr)
             reward_array.append(sum_reward)

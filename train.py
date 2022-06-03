@@ -5,6 +5,8 @@ from utils.common import PSNR, exists
 import argparse
 import torch
 import os
+import sys
+sys.dont_write_bytecode = True
 
 torch.manual_seed(1)
 
@@ -71,10 +73,10 @@ def main():
 
     MODEL = PixelRL_model(N_ACTIONS).to(DEVICE)
     OPTIMIZER = torch.optim.Adam(MODEL.parameters(), LEARNING_RATE)
-    pixelRL = PixelWiseA3C_InnerState_ConvR(MODEL, T_MAX, GAMMA, BETA)
-    pixelRL.setup(SCALE, OPTIMIZER, BATCH_SIZE, PSNR,  DEVICE, MODEL_PATH, CKPT_DIR)
-    pixelRL.load_checkpoint(CKPT_PATH)
-    pixelRL.train(train_set, valid_set, BATCH_SIZE, STEPS, SAVE_EVERY, SAVE_LOG)
+    pixelRL_SR = PixelWiseA3C_InnerState_ConvR(MODEL, T_MAX, GAMMA, BETA)
+    pixelRL_SR.setup(SCALE, OPTIMIZER, BATCH_SIZE, PSNR,  DEVICE, MODEL_PATH, CKPT_DIR)
+    pixelRL_SR.load_checkpoint(CKPT_PATH)
+    pixelRL_SR.train(train_set, valid_set, BATCH_SIZE, STEPS, SAVE_EVERY, SAVE_LOG)
 
 if __name__ == '__main__':
     main()
