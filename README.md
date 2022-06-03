@@ -1,4 +1,4 @@
-# [Pytorch] Super-Resolution using Reinforcement Learning
+# [Pytorch] Super-Resolution using Multi-Step Reinforcement Learning
 
 Implementation of Super-Resolution model using Reinforcement learning based on **Multi-Step Reinforcement Learning for Single Image Super-Resolution** paper with Pytorch.
 
@@ -104,9 +104,9 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
 
 |  Dataset  |   Set5  |  Set14  |  BSD100 | Urban100 |
 |:---------:|:-------:|:-------:|:-------:|:--------:|
-|     x2    | 38.7333 | 34.4900 | 34.4501 | 31.6963  |
-|     x3    | 34.6700 | 31.3102 | 31.3425 |     X    |
-|     x4    | 32.0406 | 29.3773 | 29.7230 | 27.0564  |
+|     x2    | 38.7633 | 34.4900 | 34.4501 | 31.6963  |
+|     x3    | 34.6914 | 31.3248 | 31.3525 |     X    |
+|     x4    | 32.0646 | 29.3933 | 29.7331 | 27.0724  |
 
   <br/>
 
