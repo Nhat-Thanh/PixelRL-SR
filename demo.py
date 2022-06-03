@@ -1,10 +1,12 @@
+import sys
+sys.dont_write_bytecode = True
+
 import argparse
 from neuralnet import PixelRL_model 
 from State import State
 import torch
 from utils.common import *
-import sys
-sys.dont_write_bytecode = True
+
 torch.manual_seed(1)
 
 # =====================================================================================

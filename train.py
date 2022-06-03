@@ -1,3 +1,6 @@
+import sys
+sys.dont_write_bytecode = True
+
 from neuralnet import PixelRL_model
 from model import PixelWiseA3C_InnerState_ConvR 
 from utils.dataset import dataset
@@ -5,8 +8,6 @@ from utils.common import PSNR, exists
 import argparse
 import torch
 import os
-import sys
-sys.dont_write_bytecode = True
 
 torch.manual_seed(1)
 
