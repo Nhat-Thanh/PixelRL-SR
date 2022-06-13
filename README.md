@@ -102,15 +102,140 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
 
 <div align="center">
 
-|  Dataset  |   Set5  |  Set14  |  BSD100 | Urban100 |
-|:---------:|:-------:|:-------:|:-------:|:--------:|
-|     x2    | 38.7633 | 34.4900 | 34.4501 | 31.6963  |
-|     x3    | 34.6914 | 31.3248 | 31.3525 |     X    |
-|     x4    | 32.0646 | 29.3933 | 29.7331 | 27.0724  |
+  <table border="1">
+  	<tr>
+  		<th style="width: 200px;">Dataset</th>
+  		<th style="width: 200px;">Scale</th>
+  		<th style="width: 200px;">Bicubic</th>
+  		<th style="width: 200px;">ESPCN</th>
+  		<th style="width: 200px;">SRCNN</th>
+  		<th style="width: 200px;">FSRCNN</th>
+  		<th style="width: 200px;">VDSR</th>
+  		<th style="width: 200px;">PixelRL-SR</th>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td rowspan="3">Set5</td>
+  		<td>2</td>
+  		<td>32.0500</td>
+  		<td>38.2830</td>
+  		<td>36.7996</td>
+  		<td>38.7593</td>
+  		<td>36.9849</td>
+  		<td>38.7633</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>3</td>
+  		<td>28.8415</td>
+  		<td>34.6919</td>
+  		<td>34.2977</td>
+  		<td>34.5420</td>
+  		<td>34.2582</td>
+  		<td>34.6914</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>4</td>
+  		<td>26.8905</td>
+  		<td>32.0646</td>
+  		<td>32.1393</td>
+  		<td>31.9589</td>
+  		<td>31.9323</td>
+  		<td>32.0646</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td rowspan="3">Set14</td>
+  		<td>2</td>
+  		<td>28.5027</td>
+  		<td>34.4974</td>
+  		<td>33.4307</td>
+  		<td>34.5086</td>
+  		<td>33.3692</td>
+  		<td>34.4900</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>3</td>
+  		<td>25.8909</td>
+  		<td>31.3246</td>
+  		<td>31.4633</td>
+  		<td>31.2409</td>
+  		<td>31.0208</td>
+  		<td>31.3248</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>4</td>
+  		<td>24.3709</td>
+  		<td>29.2934</td>
+  		<td>29.6675</td>
+  		<td>29.3272</td>
+  		<td>29.3366</td>
+  		<td>29.3933</td>
+  	</tr>
+  		<tr style="text-align: center;">
+  		<td rowspan="3">BSDS100</td>
+  		<td>2</td>
+  		<td>28.3979</td>
+  		<td>34.3377</td>
+  		<td>33.3674</td>
+  		<td>34.4503</td>
+  		<td>33.4341</td>
+  		<td>34.4501</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>3</td>
+  		<td>25.9977</td>
+  		<td>31.3524</td>
+  		<td>31.1648</td>
+  		<td>31.2723</td>
+  		<td>32.0901</td>
+  		<td>31.3525</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>4</td>
+  		<td>24.7431</td>
+  		<td>29.7331</td>
+  		<td>29.6832</td>
+  		<td>29.6845</td>
+  		<td>29.6939</td>
+  		<td>29.7331</td>
+  	</tr>
+    	<tr style="text-align: center;">
+  		<td rowspan="3">Urban100</td>
+  		<td>2</td>
+  		<td>25.3959</td>
+  		<td>31.6791</td>
+  		<td>30.2185</td>
+  		<td>31.6858</td>
+  		<td>30.5529</td>
+  		<td>31.6963</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>3</td>
+  		<td>X</td>
+  		<td>X</td>
+  		<td>X</td>
+  		<td>X</td>
+  		<td>X</td>
+  		<td>X</td>
+  	</tr>
+  	<tr style="text-align: center;">
+  		<td>4</td>
+  		<td>21.8013</td>
+  		<td>27.0724</td>
+  		<td>26.9614</td>
+  		<td>27.0038</td>
+  		<td>26.9200</td>
+  		<td>27.0724</td>
+  	</tr>
+  </table>
 
   <br/>
 
   <img src="./README/example.png" width="1000"/><br/>
+  <b>Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
+
+  <img src="./README/example-1.png" width="1000"/><br/>
+  <b>Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
+
+  <img src="./README/example-2.png" width="1000"/><br/>
   <b>Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
 </div>
 
