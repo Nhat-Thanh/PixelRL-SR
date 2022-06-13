@@ -16,15 +16,15 @@ I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs
 
 <div align="center">
 
-|Action index|     Action       |
-|:----------:|:----------------:|
-|     0      |  pixel value -= 1|
-|     1      |  do nothing      |
-|     2      |  pixel value += 1|
-|     3      |      [ESPCN](https://github.com/Nhat-Thanh/ESPCN-Pytorch)       |
-|     4      |      [SRCNN](https://github.com/Nhat-Thanh/SRCNN-Pytorch)       |
-|     5      |      [VDSR](https://github.com/Nhat-Thanh/VDSR-Pytorch)         |
-|     6      |      [FSRCNN](https://github.com/Nhat-Thanh/FSRCNN-Pytorch)     |
+|Index|     Action       |
+|:---:|:----------------:|
+|  0  |  pixel value -= 1|
+|  1  |  do nothing      |
+|  2  |  pixel value += 1|
+|  3  |  [ESPCN](https://github.com/Nhat-Thanh/ESPCN-Pytorch)    |
+|  4  |  [SRCNN](https://github.com/Nhat-Thanh/SRCNN-Pytorch)    |
+|  5  |  [VDSR](https://github.com/Nhat-Thanh/VDSR-Pytorch)      |
+|  6  |  [FSRCNN](https://github.com/Nhat-Thanh/FSRCNN-Pytorch)  |
     
   <b>The actions table.</b>
 
@@ -98,7 +98,7 @@ python demo.py --scale=2             \
 
 ## Evaluate
 
-I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use Set5's Butterfly to show my result:
+I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bold texts are the best results:
 
 <div align="center">
 
@@ -121,12 +121,12 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>36.7996</td>
   		<td>38.7593</td>
   		<td>36.9849</td>
-  		<td>38.7633</td>
+  		<td><strong>38.7633</strong></td>
   	</tr>
   	<tr style="text-align: center;">
   		<td>3</td>
   		<td>28.8415</td>
-  		<td>34.6919</td>
+  		<td><strong>34.6919</strong></td>
   		<td>34.2977</td>
   		<td>34.5420</td>
   		<td>34.2582</td>
@@ -136,7 +136,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>4</td>
   		<td>26.8905</td>
   		<td>32.0646</td>
-  		<td>32.1393</td>
+  		<td><strong>32.1393</strong></td>
   		<td>31.9589</td>
   		<td>31.9323</td>
   		<td>32.0646</td>
@@ -147,7 +147,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>28.5027</td>
   		<td>34.4974</td>
   		<td>33.4307</td>
-  		<td>34.5086</td>
+  		<td><strong>34.5086</strong></td>
   		<td>33.3692</td>
   		<td>34.4900</td>
   	</tr>
@@ -155,7 +155,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>3</td>
   		<td>25.8909</td>
   		<td>31.3246</td>
-  		<td>31.4633</td>
+  		<td><strong>31.4633</strong></td>
   		<td>31.2409</td>
   		<td>31.0208</td>
   		<td>31.3248</td>
@@ -164,7 +164,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>4</td>
   		<td>24.3709</td>
   		<td>29.2934</td>
-  		<td>29.6675</td>
+  		<td><strong>29.6675</strong></td>
   		<td>29.3272</td>
   		<td>29.3366</td>
   		<td>29.3933</td>
@@ -175,7 +175,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>28.3979</td>
   		<td>34.3377</td>
   		<td>33.3674</td>
-  		<td>34.4503</td>
+  		<td><strong>34.4503</strong></td>
   		<td>33.4341</td>
   		<td>34.4501</td>
   	</tr>
@@ -186,16 +186,16 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>31.1648</td>
   		<td>31.2723</td>
   		<td>32.0901</td>
-  		<td>31.3525</td>
+  		<td><strong>31.3525</strong></td>
   	</tr>
   	<tr style="text-align: center;">
   		<td>4</td>
   		<td>24.7431</td>
-  		<td>29.7331</td>
+  		<td><strong>29.7331</strong></td>
   		<td>29.6832</td>
   		<td>29.6845</td>
   		<td>29.6939</td>
-  		<td>29.7331</td>
+  		<td><strong>29.7331</strong></td>
   	</tr>
     	<tr style="text-align: center;">
   		<td rowspan="3">Urban100</td>
@@ -205,7 +205,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   		<td>30.2185</td>
   		<td>31.6858</td>
   		<td>30.5529</td>
-  		<td>31.6963</td>
+  		<td><strong>31.6963</strong></td>
   	</tr>
   	<tr style="text-align: center;">
   		<td>3</td>
@@ -219,24 +219,24 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR. I use 
   	<tr style="text-align: center;">
   		<td>4</td>
   		<td>21.8013</td>
-  		<td>27.0724</td>
+  		<td><strong>27.0724</strong></td>
   		<td>26.9614</td>
   		<td>27.0038</td>
   		<td>26.9200</td>
-  		<td>27.0724</td>
+  		<td><strong>27.0724</strong></td>
   	</tr>
   </table>
 
   <br/>
 
   <img src="./README/example.png" width="1000"/><br/>
-  <b>Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
+  <b>Butterfly.png in Set5, Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
 
   <img src="./README/example-1.png" width="1000"/><br/>
-  <b>Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
+  <b>Baboon.png in Set14, Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
 
   <img src="./README/example-2.png" width="1000"/><br/>
-  <b>Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
+  <b>img_001.png in Urban100, Bicubic (left), PixelRL-SR x2 (center), High Resolution (right).</b>
 </div>
 
 ## References
