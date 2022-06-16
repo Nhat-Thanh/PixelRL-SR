@@ -11,7 +11,7 @@ Implementation of Super-Resolution model using Reinforcement learning based on *
 - [References](#references)
 
 ## **Introduction**
-This implementation using [PixelRL](https://arxiv.org/abs/1912.07190) as the core of Reinforement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN in this implementation. Because changing the actions are easy so you can use other super-resolution models as your actions. 
+This implementation uses [PixelRL](https://arxiv.org/abs/1912.07190) as the core of reinforement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN as in paper. Because changing the actions are easy so you can use other super-resolution models as your actions. 
 I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
 
 <div align="center">
@@ -26,7 +26,7 @@ I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs
 |  5  |  [VDSR](https://github.com/Nhat-Thanh/VDSR-Pytorch)      |
 |  6  |  [FSRCNN](https://github.com/Nhat-Thanh/FSRCNN-Pytorch)  |
     
-  <b>The actions table.</b>
+  <b>The actions.</b>
 
 </div>
 
@@ -47,7 +47,7 @@ python train.py --scale=2              \
 ```
 - **--save-log**: if it's equal to **1**, **train loss, train rewards, train metrics, validation rewards, validation metrics** will be saved every **save-every** steps.
 
-**NOTE**: if you want to re-train a new model, you should delete all files in **checkpoint** directory. Your checkpoint will be saved when above command finishs and can be used for the next times, so you can train a model on Google Colab without taking care of GPU time limit.
+**NOTE**: if you want to re-train a new model, you should delete all files in **checkpoint** sub-directory. Your checkpoint will be saved when above command finishs and can be used for the next times, so you can train a model on Google Colab without taking care of GPU time limit.
 
 I trained the models on Google Colab in 2000 steps:
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nhat-Thanh/PixelRL-SR/blob/main/PixelRL-SR.ipynb)
@@ -114,7 +114,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bo
   		<th style="width: 200px;">PixelRL-SR</th>
   	</tr>
   	<tr style="text-align: center;">
-  		<td rowspan="3">Set5</td>
+  		<td rowspan="3"><strong>Set5</strong></td>
   		<td>2</td>
   		<td>32.0500</td>
   		<td>38.2830</td>
@@ -142,7 +142,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bo
   		<td>32.0646</td>
   	</tr>
   	<tr style="text-align: center;">
-  		<td rowspan="3">Set14</td>
+  		<td rowspan="3"><strong>Set14</strong></td>
   		<td>2</td>
   		<td>28.5027</td>
   		<td>34.4974</td>
@@ -170,7 +170,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bo
   		<td>29.3933</td>
   	</tr>
   		<tr style="text-align: center;">
-  		<td rowspan="3">BSDS100</td>
+  		<td rowspan="3"><strong>BSD100</strong></td>
   		<td>2</td>
   		<td>28.3979</td>
   		<td>34.3377</td>
@@ -198,7 +198,7 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bo
   		<td><strong>29.7331</strong></td>
   	</tr>
     	<tr style="text-align: center;">
-  		<td rowspan="3">Urban100</td>
+  		<td rowspan="3"><strong>Urban100</strong></td>
   		<td>2</td>
   		<td>25.3959</td>
   		<td>31.6791</td>
