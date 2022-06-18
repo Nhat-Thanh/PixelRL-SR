@@ -47,12 +47,14 @@ class PixelWiseA3C_InnerState_ConvR:
         self.optimizer = optimizer
         self.scale = scale
 
+    # https://github.com/FightingSrain/Pytorch-pixelRL/blob/main/pixelwise_a3c.py#L58
     def sync_parameters(self):
         for md_1, md_2 in zip(self.model.modules(), self.shared_model.modules()):
             md_1._buffers = md_2._buffers.copy()
         for target, src in zip(self.model.parameters(), self.shared_model.parameters()):
             target.detach().copy_(src.detach())
 
+    # https://github.com/FightingSrain/Pytorch-pixelRL/blob/main/pixelwise_a3c.py#L66
     def copy_grad(self, src, target):
         target_params = dict(target.named_parameters())
         for name, param in src.named_parameters():
