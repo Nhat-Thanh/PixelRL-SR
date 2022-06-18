@@ -11,7 +11,7 @@ Implementation of Super-Resolution model using Reinforcement learning based on *
 - [References](#references)
 
 ## **Introduction**
-This implementation uses [PixelRL](https://arxiv.org/abs/1912.07190) as the core of reinforement learning model, I use my 4 available Super-Resolution models for actions instead of  EDSR and ESRGAN as in paper. Because changing the actions are easy so you can use other super-resolution models as your actions. 
+This implementation uses [PixelRL](https://arxiv.org/abs/1912.07190) as the core of reinforement learning model, I use my 4 available Super-Resolution models for actions instead of EDSR and ESRGAN as in paper. Because changing the actions are easy so you can use other super-resolution models as your actions. 
 I ignore patch-wise agent and keep t_max=5 as in [PixelRL](https://arxiv.org/abs/1912.07190) paper.
 
 <div align="center">
@@ -57,7 +57,8 @@ You can get the models here:
 - [PixelRL_SR-x3.pt](checkpoint/x3/PixelRL_SR-x3.pt)
 - [PixelRL_SR-x4.pt](checkpoint/x4/PixelRL_SR-x4.pt)
 
-The log informations of my training process are ploted below, these plot lines are smoothed by [Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average) with alpha=0.2:
+The log informations of my training process are ploted below, these plots are smoothed by [Exponential Moving Average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average) with alpha=0.2:
+
 <div align="center">
   <br>
   <img src="README/scale-x2.png" width=1000/></br>
@@ -76,7 +77,7 @@ The log informations of my training process are ploted below, these plot lines a
 
 
 ## Test
-I use **Set5** as the test set. After Training, you can test models with scale factors **x2, x3, x4**, the result is calculated by compute average PSNR of all images.
+I use **Set5** as the test set. After Training, you can test models with scale factors **x2, x3, x4**, the result is the average PSNR of all images.
 ```
 python test.py --scale=2 --ckpt-path="default"
 ```
@@ -104,14 +105,14 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bo
 
   <table border="1">
   	<tr>
-  		<th style="width: 200px;">Dataset</th>
-  		<th style="width: 200px;">Scale</th>
-  		<th style="width: 200px;">Bicubic</th>
-  		<th style="width: 200px;">ESPCN</th>
-  		<th style="width: 200px;">SRCNN</th>
-  		<th style="width: 200px;">FSRCNN</th>
-  		<th style="width: 200px;">VDSR</th>
-  		<th style="width: 200px;">PixelRL-SR</th>
+  		<th style="width: 200px; text-align: center">Dataset</th>
+  		<th style="width: 200px; text-align: center">Scale</th>
+  		<th style="width: 200px; text-align: center">Bicubic</th>
+  		<th style="width: 200px; text-align: center">ESPCN</th>
+  		<th style="width: 200px; text-align: center">SRCNN</th>
+  		<th style="width: 200px; text-align: center">FSRCNN</th>
+  		<th style="width: 200px; text-align: center">VDSR</th>
+  		<th style="width: 200px; text-align: center">PixelRL-SR</th>
   	</tr>
   	<tr style="text-align: center;">
   		<td rowspan="3"><strong>Set5</strong></td>
@@ -242,6 +243,11 @@ I evaluated models with Set5, Set14, BSD100 and Urban100 dataset by PSNR, the Bo
 ## References
 - Multi-Step Reinforcement Learning for Single Image Super-Resolution: https://ieeexplore.ieee.org/document/9150927
 - Fully Convolutional Network with Reinforcement Learning for Image Processing: https://arxiv.org/abs/1912.07190
+- Real-Time Single Image and Video Super-Resolution Using an Efficient Sub-Pixel Convolutional Neural Network: https://arxiv.org/abs/1609.05158
+- Image Super-Resolution Using Deep Convolutional Networks: https://arxiv.org/abs/1501.00092
+- Accurate Image Super-Resolution Using Very Deep Convolutional Networks: https://arxiv.org/abs/1511.04587
+- Accelerating the Super-Resolution Convolutional Neural Network: https://arxiv.org/abs/1608.00367
+- FightingSrain/Pytorch-pixelRL: https://github.com/FightingSrain/Pytorch-pixelRL
 - T91, General100, BSD200: http://vllab.ucmerced.edu/wlai24/LapSRN/results/SR_training_datasets.zip
 - Set5: https://filebox.ece.vt.edu/~jbhuang/project/selfexsr/Set5_SR.zip
 - Set14: https://filebox.ece.vt.edu/~jbhuang/project/selfexsr/Set14_SR.zip
