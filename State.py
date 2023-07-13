@@ -36,6 +36,7 @@ class State:
             'alpha': 1.0,
             'cuda': True,
             'isHR': True,
+            'is_train': False,
             'models': 'ckpt/PPON_G.pth',
             'only_y': True,
             'output_folder': 'result/Set5/',
