@@ -1,6 +1,6 @@
 import torch
 from neuralnet import ESPCN_model, FSRCNN_model, SRCNN_model, VDSR_model
-from PPON import PPON_model
+from PPON.PPON_model import PPONModel
 from utils.common import exist_value, to_cpu
 
 class State:
@@ -39,12 +39,12 @@ class State:
             'models': 'ckpt/PPON_G.pth',
             'only_y': True,
             'output_folder': 'result/Set5/',
-            'test_hr_folder': 'dataset/test/x{scale}/labels',
-            'test_lr_folder': 'dataset/test/x{scale}/data',
+            'test_hr_folder': f'dataset/test/x{scale}/labels',
+            'test_lr_folder': f'dataset/test/x{scale}/data',
             'upscale_factor': scale,
             'which_model': 'ppon'
         }
-        self.PPON = PPON_model(opt).to(device)
+        self.PPON = PPONModel(opt).to(device)
         model_path = "sr_weight/PPON_G.pth"
         self.PPON.load_state_dict(torch.load(model_path, dev))
         self.PPON.eval()
