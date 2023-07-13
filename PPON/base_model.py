@@ -5,8 +5,9 @@ import torch.nn as nn
 
 # args.save_path | is_train
 
-class BaseModel():
+class BaseModel(nn.Module):
     def __init__(self, args):
+        super().__init__()
         self.args = args
         self.is_train = args.is_train
         self.save_dir = args.save_path

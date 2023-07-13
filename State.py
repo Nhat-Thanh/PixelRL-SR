@@ -2,7 +2,15 @@ import torch
 from neuralnet import ESPCN_model, FSRCNN_model, SRCNN_model, VDSR_model
 from PPON.PPON_model import PPONModel
 from utils.common import exist_value, to_cpu
+import json
 
+# declaringa a class
+class obj:
+     
+    # constructor
+    def __init__(self, dict1):
+        self.__dict__.update(dict1)
+        
 class State:
     def __init__(self, scale, device):
         self.device = device
@@ -37,7 +45,9 @@ class State:
             'cuda': True,
             'isHR': True,
             'is_train': False,
-            'models': 'ckpt/PPON_G.pth',
+            'models': 'sr_weight/PPON_G.pth',
+            'pretrained_model_D': 'sr_weight/PPON_D.pth',
+            'pretrained_model_G': 'sr_weight/PPON_G.pth',
             'only_y': True,
             'output_folder': 'result/Set5/',
             'save_path': 'save',
@@ -46,6 +56,7 @@ class State:
             'upscale_factor': scale,
             'which_model': 'ppon'
         }
+        opt = json.loads(json.dumps(opt), object_hook=obj)
         self.PPON = PPONModel(opt).to(device)
         model_path = "sr_weight/PPON_G.pth"
         self.PPON.load_state_dict(torch.load(model_path, dev))
