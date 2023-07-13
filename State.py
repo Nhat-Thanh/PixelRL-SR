@@ -40,6 +40,7 @@ class State:
             'models': 'ckpt/PPON_G.pth',
             'only_y': True,
             'output_folder': 'result/Set5/',
+            'save_dir': 'save',
             'test_hr_folder': f'dataset/test/x{scale}/labels',
             'test_lr_folder': f'dataset/test/x{scale}/data',
             'upscale_factor': scale,

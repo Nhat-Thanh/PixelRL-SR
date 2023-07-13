@@ -9,8 +9,7 @@ class BaseModel():
     def __init__(self, args):
         self.args = args
         self.is_train = args.is_train
-        if self.is_train:
-            self.save_dir = args.save_path
+        self.save_dir = args.save_path
         self.schedulers = []
         self.optimizers = []
 
