@@ -1,5 +1,6 @@
 import torch
 from neuralnet import ESPCN_model, FSRCNN_model, SRCNN_model, VDSR_model
+from PPON import PPON_model
 from utils.common import exist_value, to_cpu
 
 class State:
@@ -30,6 +31,11 @@ class State:
         model_path = "sr_weight/VDSR.pt"
         self.VDSR.load_state_dict(torch.load(model_path, dev))
         self.VDSR.eval()
+        
+        self.PPON = PPON_model().to(device)
+        model_path = "sr_weight/PPON_G.pth"
+        self.PPON.load_state_dict(torch.load(model_path, dev))
+        self.PPON.eval()
 
     def reset(self, lr, bicubic):
         self.lr_image = lr 
@@ -63,7 +69,9 @@ class State:
 
         with torch.no_grad():
             if exist_value(act, 3):
-                espcn = to_cpu(self.ESPCN(self.lr_image))
+                # change ESPCN to PPON
+                # espcn = to_cpu(self.ESPCN(self.lr_image))
+                espcn = to_cpu(self.PPON(self.lr_image))
             if exist_value(act, 4):
                 srcnn[:, :, 8:-8, 8:-8] = to_cpu(self.SRCNN(self.sr_image))
             if exist_value(act, 5):
