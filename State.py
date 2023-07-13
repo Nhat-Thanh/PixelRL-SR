@@ -32,7 +32,25 @@ class State:
         self.VDSR.load_state_dict(torch.load(model_path, dev))
         self.VDSR.eval()
         
-        self.PPON = PPON_model().to(device)
+        parser = argparse.ArgumentParser(description='PPON Test')
+        parser.add_argument('--test_hr_folder', type=str, default=f'dataset/test/x{scale}/labels',
+                            help='the folder of the target images')
+        parser.add_argument('--test_lr_folder', type=str, default=f'dataset/test/x{scale}/data',
+                            help='the folder of the input images')
+        parser.add_argument('--output_folder', type=str, default='result/Set5/')
+        parser.add_argument('--models', type=str, default='sr_weight/PPON_G.pth',
+                            help='models file to use')
+
+        parser.add_argument('--cuda', action='store_true', default=True,
+                            help='use cuda')
+        parser.add_argument('--upscale_factor', type=int, default=scale, help='upscaling factor')
+        parser.add_argument('--only_y', action='store_true', default=True,
+                            help='evaluate on y channel, if False evaluate on RGB channels')
+        parser.add_argument('--isHR', action='store_true', default=True)
+        parser.add_argument("--which_model", type=str, default="ppon")
+        parser.add_argument("--alpha", type=float, default=1.0)
+        opt = parser.parse_args()
+        self.PPON = PPON_model(opt).to(device)
         model_path = "sr_weight/PPON_G.pth"
         self.PPON.load_state_dict(torch.load(model_path, dev))
         self.PPON.eval()
