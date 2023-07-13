@@ -53,7 +53,8 @@ class State:
         act = to_cpu(act)
         inner_state = to_cpu(inner_state)
         srcnn = self.sr_image.clone()
-        espcn = self.sr_image.clone()
+        # espcn = self.sr_image.clone()
+        ppon = self.sr_image.clone()
         fsrcnn = self.sr_image.clone()
         vdsr = self.sr_image.clone()
 
@@ -71,7 +72,7 @@ class State:
             if exist_value(act, 3):
                 # change ESPCN to PPON
                 # espcn = to_cpu(self.ESPCN(self.lr_image))
-                espcn = to_cpu(self.PPON(self.lr_image))
+                ppon = to_cpu(self.PPON(self.lr_image))
             if exist_value(act, 4):
                 srcnn[:, :, 8:-8, 8:-8] = to_cpu(self.SRCNN(self.sr_image))
             if exist_value(act, 5):
@@ -83,7 +84,8 @@ class State:
         self.sr_image = moved_image
         act = act.unsqueeze(1)
         act = torch.concat([act, act, act], 1)
-        self.sr_image = torch.where(act==3, espcn,  self.sr_image)
+        # self.sr_image = torch.where(act==3, espcn,  self.sr_image)
+        self.sr_image = torch.where(act==3, ppon,  self.sr_image)
         self.sr_image = torch.where(act==4, srcnn,  self.sr_image)
         self.sr_image = torch.where(act==5, vdsr,   self.sr_image)
         self.sr_image = torch.where(act==6, fsrcnn, self.sr_image)
