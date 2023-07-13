@@ -4,9 +4,9 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 from torch.optim import lr_scheduler
-import models.networks as networks
+import PPON.networks as networks
 from .base_model import BaseModel
-from models.loss import GANLoss, MultiscaleL1Loss
+from PPON.loss import GANLoss, MultiscaleL1Loss
 import pytorch_msssim
 
 # args.is_train | pixel_weight | pixel_criterion | feature_weight | feature_criterion | gan_type | gan_weight
