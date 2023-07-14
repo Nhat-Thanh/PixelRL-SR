@@ -1,7 +1,9 @@
 import torch
 from neuralnet import ESPCN_model, FSRCNN_model, SRCNN_model, VDSR_model
+import torch.nn as nn
 from PPON.PPON_model import PPONModel
-from utils.common import exist_value, to_cpu
+from PPON import networks
+from utils.common import exist_value, to_cpu, convert_shape
 import json
 
 # declaringa a class
@@ -57,10 +59,11 @@ class State:
             'which_model': 'ppon'
         }
         opt = json.loads(json.dumps(opt), object_hook=obj)
-        self.PPON = PPONModel(opt).to(device)
+        self.PPON = networks.define_G(opt)
+        if isinstance(self.PPON, nn.DataParallel):
+            self.PPON = self.PPON.module
         model_path = "sr_weight/PPON_G.pth"
-        self.PPON.load_state_dict(torch.load(model_path, dev))
-        self.PPON.eval()
+        self.PPON.load_state_dict(torch.load(model_path), strict=True)
 
     def reset(self, lr, bicubic):
         self.lr_image = lr 
@@ -97,13 +100,31 @@ class State:
             if exist_value(act, 3):
                 # change ESPCN to PPON
                 # espcn = to_cpu(self.ESPCN(self.lr_image))
-                ppon = to_cpu(self.PPON(self.lr_image))
+                self.PPON.cuda()
+                self.lr_image.cuda()
+                print(self.lr_image.shape)
+                with torch.no_grad():
+                    out_c, out_s, out_p = self.PPON(self.lr_image)
+                    out_c, out_s, out_p = out_c.cpu(), out_s.cpu(), out_p.cpu()
+                    out_img_c = out_c.detach().numpy()
+                    # out_img_c = convert_shape(out_img_c)
+
+                    out_img_s = out_s.detach().numpy()
+                    # out_img_s = convert_shape(out_img_s)
+
+                    out_img_p = out_p.detach().numpy()
+                    # out_img_p = convert_shape(out_img_p)
+                print(out_img_c.shape)
+                ppon = torch.from_numpy(out_img_c)
             if exist_value(act, 4):
                 srcnn[:, :, 8:-8, 8:-8] = to_cpu(self.SRCNN(self.sr_image))
+                print(f"srcnn shape: {srcnn.shape}")
             if exist_value(act, 5):
                 vdsr = to_cpu(self.VDSR(self.sr_image))
+                print(f"VDSR shape: {vdsr.shape}")
             if exist_value(act, 6):
                 fsrcnn = to_cpu(self.FSRCNN(self.lr_image))
+                print(f"fsrcnn shape: {fsrcnn.shape}")
 
         self.lr_image = to_cpu(self.lr_image)
         self.sr_image = moved_image

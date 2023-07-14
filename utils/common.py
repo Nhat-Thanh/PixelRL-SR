@@ -11,6 +11,12 @@ def read_image(filepath):
 def write_image(filepath, src):
     io.write_png(src, filepath)
 
+# from PPON library
+def convert_shape(img):
+    img = np.transpose((img * 255.0).round(), (1, 2, 0))
+    img = np.uint8(np.clip(img, 0, 255))
+    return img    
+
 # https://www.researchgate.net/publication/284923134
 def rgb2ycbcr(src):
     R = src[0]
