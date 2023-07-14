@@ -102,7 +102,7 @@ class State:
                 # espcn = to_cpu(self.ESPCN(self.lr_image))
                 self.PPON.cuda()
                 self.lr_image.cuda()
-                print(self.lr_image.shape)
+                # print(self.lr_image.shape)
                 with torch.no_grad():
                     out_c, out_s, out_p = self.PPON(self.lr_image)
                     out_c, out_s, out_p = out_c.cpu(), out_s.cpu(), out_p.cpu()
@@ -114,17 +114,17 @@ class State:
 
                     out_img_p = out_p.detach().numpy()
                     # out_img_p = convert_shape(out_img_p)
-                print(out_img_c.shape)
+                # print(out_img_c.shape)
                 ppon = torch.from_numpy(out_img_c)
             if exist_value(act, 4):
                 srcnn[:, :, 8:-8, 8:-8] = to_cpu(self.SRCNN(self.sr_image))
-                print(f"srcnn shape: {srcnn.shape}")
+                # print(f"srcnn shape: {srcnn.shape}")
             if exist_value(act, 5):
                 vdsr = to_cpu(self.VDSR(self.sr_image))
-                print(f"VDSR shape: {vdsr.shape}")
+                # print(f"VDSR shape: {vdsr.shape}")
             if exist_value(act, 6):
                 fsrcnn = to_cpu(self.FSRCNN(self.lr_image))
-                print(f"fsrcnn shape: {fsrcnn.shape}")
+                # print(f"fsrcnn shape: {fsrcnn.shape}")
 
         self.lr_image = to_cpu(self.lr_image)
         self.sr_image = moved_image
