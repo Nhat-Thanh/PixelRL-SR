@@ -106,7 +106,7 @@ class State:
                 with torch.no_grad():
                     out_c, out_s, out_p = self.PPON(self.lr_image)
                     out_c, out_s, out_p = out_c.cpu(), out_s.cpu(), out_p.cpu()
-                    out_img_c = out_c.detach().numpy()
+                    out_img_c = out_c.detach().numpy().squeeze()
                     # out_img_c = convert_shape(out_img_c)
 
                     out_img_s = out_s.detach().numpy()

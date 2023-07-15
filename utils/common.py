@@ -3,6 +3,8 @@ import torchvision.io as io
 import torchvision.transforms as transforms
 import numpy as np
 import os
+from skimage.metrics import peak_signal_noise_ratio as psnr
+from skimage.metrics import structural_similarity as ssim
 
 def read_image(filepath):
     image = io.read_image(filepath, io.ImageReadMode.RGB)
@@ -15,7 +17,25 @@ def write_image(filepath, src):
 def convert_shape(img):
     img = np.transpose((img * 255.0).round(), (1, 2, 0))
     img = np.uint8(np.clip(img, 0, 255))
-    return img    
+    return img
+
+def shave(im, border):
+    border = [border, border]
+    im = im[border[0]:-border[0], border[1]:-border[1], ...]
+    return im
+
+def quantize(img):
+    return img.clip(0, 255).round().astype(np.uint8)
+
+def compute_psnr(im1, im2):
+    p = psnr(im1, im2)
+    return p
+
+def compute_ssim(im1, im2):
+    isRGB = len(im1.shape) == 3 and im1.shape[-1] == 3
+    s = ssim(im1, im2, K1=0.01, K2=0.03, win_size=min(im1.shape[0], im1.shape[1], 7), gaussian_weights=True, sigma=1.5, use_sample_covariance=False,
+             multichannel=isRGB)
+    return s
 
 # https://www.researchgate.net/publication/284923134
 def rgb2ycbcr(src):
