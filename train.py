@@ -54,7 +54,8 @@ T_MAX = 5
 BETA = 1e-2
 
 # Dataset settings
-HR_CROP_SIZE = 60
+# HR_CROP_SIZE = 60 # 60 was chosen because it is divisble by 2, 3, 4
+HR_CROP_SIZE = 64
 LR_CROP_SIZE = HR_CROP_SIZE // SCALE
 DATASET_DIR = "dataset"
 
